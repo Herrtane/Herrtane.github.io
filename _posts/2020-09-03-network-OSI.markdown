@@ -18,7 +18,7 @@ comments: true
 <br/>
 각 계층은 이렇게 구성되어있다.
 
-![osi7layer](./img/osi7layer.jpg)
+![osi7layer](../img/osi7layer.jpg)
 
 - Layer 7 : Application Layer
 - Layer 6 : Presentation Layer
