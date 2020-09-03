@@ -18,6 +18,8 @@ comments: true
 <br/>
 각 계층은 이렇게 구성되어있다.
 
+![osi7layer](./img/osi7layer.jpg)
+
 - Layer 7 : Application Layer
 - Layer 6 : Presentation Layer
 - Layer 5 : Session Layer
@@ -35,8 +37,8 @@ comments: true
 그렇다면 각 계층은 어떤 특징을 가지고 있을까?
 
 1. Physical Layer : 물리적인 통신을 담당한다. Ethernet, Wifi 처럼 직접 통신 신호를 주고 받게끔 하는 역할을 한다. 눈에 보이는 인터넷 선으로 생각하면 쉽다.
-2. Data Link Layer : Physical Layer에서 통신을 주고 받으면서 발생할 수 있는 에러나 누락을 검출하고 수정하는 역할을 한다. 크게 두가지 역할로 나뉘는데, 오류를 검출하고 수정하는 Data Link Control과, 다수의 노드(각 사람이라고 생각하면 된다)끼리 통신할 때 통신 질서와 접근을 조절해주는 Multiple Access Control이 그것이다.
-3. Network Layer : 통신하려는 노드가 많아지고 거리가 멀어질수록 Physical Layer가 감당하기 힘들 수 있다. Network Layer는 노드와 노드간 통신을 넘어서서, 복잡한 Network 안에서도 송신하는 주체와 수신하는 주체간의 통신이 원활히 이루어지도록 하는 역할을 맡는다. 주로 **IP주소**를 이용하여 이 과정을 진행한다.
+2. Data Link Layer : Physical Layer에서 통신을 주고 받으면서 발생할 수 있는 에러나 누락을 검출하고 수정하는 역할과, 통신 흐름을 제어하는 역할을 한다. 크게 두가지 역할로 나뉘는데, 오류를 검출하고 수정하는 Data Link Control과, 다수의 노드(각 사람이라고 생각하면 된다)끼리 통신할 때 통신 질서와 접근을 조절해주는 Multiple Access Control이 그것이다.
+3. Network Layer : 통신하려는 노드가 많아지고 거리가 멀어질수록 Physical Layer가 감당하기 힘들 수 있다. Network Layer는 노드와 노드간 통신을 넘어서서, 복잡한 Network 안에서도 송신하는 주체와 수신하는 주체간의 통신이 원활히 이루어지도록 하고, **라우팅**(여러 통신 경로 중에 최적의 경로를 선택하는 것)을 다루는 역할을 한다. 주로 **IP주소**를 이용하여 이 과정을 진행한다.
 4. Transport Layer : Network Layer는 혹여나 에러가 발생하거나 흐름이 이상해져도 이를 검출하고 수정할 능력이 부족하다. Transport Layer는 이를 담당하여 통신의 신뢰성을 높인다. 뿐만 아니라, Network Layer를 통해 올바른 IP주소로 통신이 도달했다면, 해당 컴퓨터 내에서 어떤 포트를 통과해야 하는지를 정해주는 역할도 한다. 참고로, IP주소와 포트주소를 하나로 묶어서 만든 것이 바로 **소켓**이다. (포트와 관련된 부분은 추후에 설명하겠다.) **TCP 프로토콜**은 너무나도 유명한 Transport Layer의 예시이다.
 5. Session Layer : 이 계층부터 7계층까지는 한꺼번에 합쳐서 Application Layer라고 취급하기도 한다.
 Session Layer는 통신에 필요한 권한 검사나 허가를 하거나, 세션을 복구하는 기능을 한다.
