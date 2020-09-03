@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "지킬 사용법"
-date:   2020-01-02 19:31:29 +0900
-categories: jekyll update
+date:   2020-09-03 14:31:29 +0900
+categories: Diary
 ---
 
 ※ 지킬 사용법이 담긴 포스팅이라 원문 그대로 보존해놓겠다.

@@ -4,30 +4,21 @@ title: About
 permalink: /about/
 ---
 
-## Theme Monos
-> Simple and lightweight theme for Jekyll
+## 이철한 / Chulhan Lee (Herrtane)
+> 나는 녹슬기보다는 닳아 없어지기를.<br/>
+> Better to wear out than rust out.<br/>
 
-### Features
-- Responsive.
-- Syntax Highlight
-- Most optimized theme for tech blog.
-- Lightweight with minimum stylesheet.
-- Easy to customize.
-- Offers category menu.
+### Who am I?
+프로그래밍을 통해서 꿈꾸는 이상을 실현해나가고 싶은, 프로그래머를 지망하는 컴공과 학생입니다.<br/>
+게임과 음악을 사랑하며, 감성을 중요한 가치로 생각하며 살아갑니다.<br/>
+이 곳에 방문하신 모든 여러분들을 진심으로 환영합니다.<br/><br/>
 
-### _config.yml
-> Code block will look like this.
-```yml
-highlighter-theme: monokai //you can change your syntax color scheme.
-date_format: "%Y-%M-%D" //and date format.
-```
+### Profile
+- South Korea
+- Kyunghee Univ.
+- Computer Science and Engineering
 
-### Screenshots
-#### Page
-![alt text](/public/img/screenshot-1.png)
-#### Articles
-![alt text](/public/img/screenshot-2.png)
-#### Page - Mobile
-![alt text](/public/img/screenshot-m1.png)
-#### Page - Articles
-![alt text](/public/img/screenshot-m2.png)
+### Contact
+- Email : herrtane@gmail.com
+- Blog(Naver) : blog.naver.com/cjfgksvv
+- Blog(Github) : herrtane.github.io
