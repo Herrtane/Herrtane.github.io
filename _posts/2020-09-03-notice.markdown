@@ -3,6 +3,7 @@ layout: post
 title: 공지사항
 date: 2020-09-03 16:25:23 +0900
 category: Diary
+comments: true
 ---
 # 공지사항
 > Herrtane의 블로그에 오신 것을 환영합니다.
@@ -28,5 +29,5 @@ category: Diary
 
 ※ 코드를 입력하는 란인데, 추후 사용법을 더 익힐때까지는 이 포스팅에 잠시 저장하도록 하겠다.
 ```cpp
-cout<< 'hello world';
+cout<< 'hello world'
 ```
