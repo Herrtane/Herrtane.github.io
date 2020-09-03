@@ -1,9 +1,12 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "지킬 사용법"
 date:   2020-01-02 19:31:29 +0900
 categories: jekyll update
 ---
+
+※ 지킬 사용법이 담긴 포스팅이라 원문 그대로 보존해놓겠다.
+
 You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
 Jekyll requires blog post files to be named according to the following format:
