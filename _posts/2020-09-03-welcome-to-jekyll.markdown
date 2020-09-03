@@ -6,7 +6,25 @@ categories: Diary
 comments: true
 ---
 
-※ 지킬 사용법이 담긴 포스팅이라 원문 그대로 보존해놓겠다.
+※ 지킬 사용법이 담긴 포스팅이라 원문에 덧붙여서 보존해놓겠다.
+<br/>
+
+## 잊어버리기 쉬운 명령어 및 사용법
+
+1. 수정사항을 localhost상에서 실시간으로 확인하는 명령어
+```
+bundle exec jekyll serve
+```
+2. git에 commit하고 push하는 명령어
+```
+git add .
+git commit -m "blabla"
+git push
+```
+<br/>
+
+## 원문
+<br/>
 
 You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
 
