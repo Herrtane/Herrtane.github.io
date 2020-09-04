@@ -40,6 +40,12 @@ tag_dir: tag/
 comments:
   provider: disqus
 
+analytics:
+  provider: "google"
+  google:
+    tracking_id: "UA-177216068-1"
+    anonymize_ip: false
+
 
 # Exclude from processing.
 # The following items will not be processed, by default.
