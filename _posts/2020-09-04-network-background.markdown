@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Background knowledge (예정)
-date: 2020-09-04 00:54:23 +0900
+title: Background knowledge
+date: 2020-09-04 13:29:23 +0900
 category: Network
 comments: true
 ---
@@ -9,48 +9,34 @@ comments: true
 <br/>
 <br/>
 
-## 추가예정 
+## 배경지식 
 
-컴퓨터 네트워크가 점점 발전하면서, 네트워크 통신 기능을 수행하는 기기를 만드는 회사마다 네트워크 통신에 대한 기준이 제각각 생겨났었는데, 서로 다른 기준을 하나로 통일해서 네트워크 통신을 원활히 하기 위해서 고안된 계층 구조가 바로 **OSI 7계층(Open System Interconnection)** 구조이다.
-<br/>
-<br/>
-각 계층은 이렇게 구성되어있다.
+**프로토콜(protocol)** : 데이터를 송수신하는 과정을 주관하는 일련의 규칙들을 뜻한다. 예를 들어, 한국어를 하는 사람과 프랑스어를 하는 사람이 서로 통신하기 위해서는 공통된 언어가 필요한데, 영어가 이 역할을 하는 것과 유사하다.
 
-![osi7layer]({{site.url}}/img/osi7layer.jpg)
+**Data Flow Direction** : 네트워크에서 정보를 주고 받는 방향별 명칭이 존재한다. 크게 3가지로 나뉜다.
+1. Simplex : 한 방향으로만 진행되는 일방향 통신이다.
+2. Half-duplex : 양방향으로 진행되기는 하지만, 동시에 진행되는 것이 아니라, 한 번 수신하면, 한 번 송신하는 식으로 주고 받는 형식이다.
+3. Full-duplex : 실시간 양방향 통신이다.
 
-- Layer 7 : Application Layer
-- Layer 6 : Presentation Layer
-- Layer 5 : Session Layer
-- Layer 4 : Transport Layer
-- Layer 3 : Network Layer
-- Layer 2 : Data Link Layer
-- Layer 1 : Physical Layer
+**Physical Structure** : 네트워크에서 기기 간의 연결 방식에 대한 명칭이 존재한다. 크게 2가지로 나뉜다.
+1. Point-to-point : 두 기기가 서로 연결된 것을 의미한다.
+2. Multipoint : 한 주축 케이블을 중심으로, 여러 기기가 쭉 연결된 것을 의미한다.
 
-낮은 계층일수록 물리적, 기계적이고, 높은 계층일수록 사용자와 가까운 특징을 가진다.
-<br/>
-<br/>
+**토폴로지(topology)** : 네트워크가 물리적으로 어떻게 배치되어 있는지를 나타내는 단어이다. 둘 이상의 장치들은 서로 **연결(link)**되어 있고, 둘 이상의 연결(link)들은 **토폴로지(topology)**를 형성한다. 크게 4종류로 나뉜다.
+1. Star topology : 여러 기기가 하나의 hub에 연결되어 있는 구조이다. 어느 하나의 link가 끊어지더라도, 나머지 link들은 영향을 받지 않는다는 장점이 있지만, hub가 고장난다면 전체 통신이 망가질 수 있다는 단점이 존재한다. Tree topology는 Star topology의 응용된 버전이다.
+2. Mesh topology : 모든 기기가 서로 연결되어 있는 구조이다. 가장 견고한 topology이고 보안이 보장되지만, 모든 기기마다 link를 걸어야 하기 때문에 경제적인 부담이 되는 단점이 있다.
+3. Bus topology : 하나의 케이블에 각 기기가 연결된 multipoint형 구조이다. 설치가 쉽다는 장점이 있으나, 기기 수가 많아지면 충돌할 가능성이 생긴다.
+4. Ring topology : 말 그대로 각 기기가 고리 구조로 연결되어 있다. 상대적으로 설치하기 쉽고 데이터를 안정적으로 전송하지만, ring의 일부가 고장나면 전체가 영향을 받기 쉽다.
 
-## OSI 7Layer의 구조 및 특징
+**인터넷(internetwork)** : LAN(Local Area Network), MAN(Metropolitan Area Network), WAN(Wide Area Network)이 복합적으로 모여서 인터넷을 형성한다.
 
-그렇다면 각 계층은 어떤 특징을 가지고 있을까?
+**성능(performance)** : 네트워크 통신에서 성능은 크게 두가지로 나뉜다. **대역폭(bandwidth)**은 link에서의 잠재적인 성능을 나타내고, 그 중 얼마나 빠르게 데이터를 전송할 수 있는지 실제로 측정된 수치가 **출력(throughput)**이다.
 
-1. Physical Layer : 물리적인 통신을 담당한다. Ethernet, Wifi 처럼 직접 통신 신호를 주고 받게끔 하는 역할을 한다. 눈에 보이는 인터넷 선으로 생각하면 쉽다.
-2. Data Link Layer : Physical Layer에서 통신을 주고 받으면서 발생할 수 있는 에러나 누락을 검출하고 수정하는 역할과, 통신 흐름을 제어하는 역할을 한다. 크게 두가지 역할로 나뉘는데, 오류를 검출하고 수정하는 Data Link Control과, 다수의 노드(각 사람이라고 생각하면 된다)끼리 통신할 때 통신 질서와 접근을 조절해주는 Multiple Access Control이 그것이다.
-3. Network Layer : 통신하려는 노드가 많아지고 거리가 멀어질수록 Physical Layer가 감당하기 힘들 수 있다. Network Layer는 노드와 노드간 통신을 넘어서서, 복잡한 Network 안에서도 송신하는 주체와 수신하는 주체간의 통신이 원활히 이루어지도록 하고, **라우팅**(여러 통신 경로 중에 최적의 경로를 선택하는 것)을 다루는 역할을 한다. 주로 **IP주소**를 이용하여 이 과정을 진행한다.
-4. Transport Layer : Network Layer는 혹여나 에러가 발생하거나 흐름이 이상해져도 이를 검출하고 수정할 능력이 부족하다. Transport Layer는 이를 담당하여 통신의 신뢰성을 높인다. 뿐만 아니라, Network Layer를 통해 올바른 IP주소로 통신이 도달했다면, 해당 컴퓨터 내에서 어떤 포트를 통과해야 하는지를 정해주는 역할도 한다. 참고로, IP주소와 포트주소를 하나로 묶어서 만든 것이 바로 **소켓**이다. (포트와 관련된 부분은 추후에 설명하겠다.) **TCP 프로토콜**은 너무나도 유명한 Transport Layer의 예시이다.
-5. Session Layer : 이 계층부터 7계층까지는 한꺼번에 합쳐서 Application Layer라고 취급하기도 한다.
-Session Layer는 통신에 필요한 권한 검사나 허가를 하거나, 세션을 복구하는 기능을 한다.
-6. Presentation Layer : 같은 영상을 저장하더라도, 저장 방식에 따라서 파일의 형식이 avi, wma, mp4등으로 달라지는데, Presentation Layer는 이런 파일의 형식을 복호화, 암호화하는 역할을 주로 담당한다.
-7. Application Layer : 웹브라우저처럼 사용자의 손길이 직접적으로 닿는 대부분의 경우가 이 계층에 해당한다.
+**Cyclic Redundancy Check(CRC)** : 네트워크에서 사용되는, 에러 검출 및 복구에 사용되는 코드이다.
 
-세부적인 내용은 앞으로 포스팅별로 차차 다루어보겠다. (이미 전체적인 흐름은 다 나왔지만..)
 <br/>
 <br/>
 
 ## 마치며
 
-처음으로 마크다운 형식을 이용해서 본격적인 포스팅을 진행해보는데, 그동안 네이버 블로그에서 해왔던 형식으로 진행하는 것이 익숙해서 우선 이런 방식으로 진행해보려고 한다. 앞으로 이 블로그를 얼마나 많은 사람들에게 공개할 지는 모르겠지만, 가장 큰 목적은 내가 공부해온 흔적들을 기록하는 것이므로, 초심을 잃지 않고 열심히 적어나가보려고 한다.
-<br/>
-<br/>
-
-다음 포스팅은, Physical Layer와 Data Link Layer에 대해 작성하고, 추가적인 네트워크 관련 배경지식 역시 작성할 예정이다.
+다음 포스팅은, Physical Layer와 Data Link Layer에 대해 작성할 예정이다.
