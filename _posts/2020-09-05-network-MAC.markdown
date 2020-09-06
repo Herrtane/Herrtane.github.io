@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Data link layer (1) - MAC
-date: 2020-09-05 01:10:23 +0900
+title: <Network> 03. Data link layer (1) - MAC
+date: 2020-09-05 12:10:23 +0900
 category: Network
 comments: true
 ---
@@ -9,14 +9,16 @@ comments: true
 
 사실 첫 번째 계층인 Physical layer에 대해서는 지난 배경지식 포스팅에서 다룬 것이나 마찬가지이기 때문에, 바로 Data link layer부터 다루도록 한다.
 
-<br/>
-<br/>
 
 ## Data link layer의 첫 번째 역할 : Media Access Control(MAC)
 
 Data link layer에 대한 개념은 Network 카테고리의 첫 번째 포스팅에서 다루었었다. 이번 포스팅에서는 이어서 Data link layer의 첫 번째 역할인 Media Access Control에 대해서 이야기해보려고 한다.
+<br/>
+<br/>
 
 하나의 네트워크에서 오직 두 개의 기기만 서로 link를 형성하여 통신을 한다면 복잡하지 않겠지만, 만약 세 개 이상의 기기가 통신을 한다면 어떨까? 만약 세 기기가 동시에 신호를 보내려다가 신호끼리 충돌한다면 이는 어떻게 해결할까?
+<br/>
+<br/>
 
 이런 문제를 해결하기 위해서 고안된 것이 바로 Media Access Control이다. 그리고 Access 방식에 따라서 다시 크게 3가지 방식으로 나뉜다. 아래의 그림을 참고하자.
 
@@ -30,6 +32,8 @@ Data link layer에 대한 개념은 Network 카테고리의 첫 번째 포스팅
 ## Random-access protocols
 
 이 방식에서는 통신하는 그 어떤 기기도 통신하는 과정에서 더 많은 권리를 가지지 않는다. 오직 상호간의 경쟁에 기반(contention based access)하여 통신을 진행한다. 그렇기에 random이라는 명칭이 붙었다고 볼 수 있다. 
+<br/>
+<br/>
 
 신호가 서로 충돌하는 것을 막기 위해서, random-access protocol에서는 크게 3가지 구체적인 방법이 고안되었다.
 
@@ -49,6 +53,8 @@ Data link layer에 대한 개념은 Network 카테고리의 첫 번째 포스팅
 ## Controlled-access protocols
 
 이 방식에서는 어느 한 기기가 우선권을 가지고 다른 기기들의 통신을 관리하기 때문에, controlled라는 명칭이 붙었다고 볼 수 있다.
+<br/>
+<br/>
 
 이 방식에서는 Reservation, Polling, Token passing의 방법이 존재하지만, 세부적인 설명은 우선 생략하도록 하겠다.
 

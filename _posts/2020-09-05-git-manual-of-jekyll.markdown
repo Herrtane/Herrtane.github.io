@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Jekyll 사용법"
-date:   2020-09-05 01:00:29 +0900
+date:   2020-09-05 12:00:29 +0900
 categories: Git/Github
 comments: true
 ---

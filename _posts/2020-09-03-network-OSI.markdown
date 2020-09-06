@@ -1,6 +1,6 @@
 ---
 layout: post
-title: OSI 7Layer
+title: <Network> 01. OSI 7Layer
 date: 2020-09-03 23:09:23 +0900
 category: Network
 comments: true
@@ -8,8 +8,7 @@ comments: true
 지난 학기, 그러니까 3학년 1학기에 컴퓨터 네트워크 과목에서 배웠던 내용이 중요하다고 판단하여서,
 이번 기회에 복습하는 겸 해서 컴퓨터 네트워크에 대한 중요한 이론을 차차 정리해나가려고 한다.
 배웠던 기억과 필기에 의존하는 만큼, 약간의 오류가 있을 수 있다.
-<br/>
-<br/>
+
 
 ## OSI 7Layer란?  
 
