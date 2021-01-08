@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <TCP/IP Socket> 00. 공부했던 github 링크
+title: <TCP/IP Socket> 01. 공부했던 github 링크 (Linux Ver.)
 date: 2021-01-02 23:47:23 +0900
 category: TCP/IP_Socket
 comments: true
