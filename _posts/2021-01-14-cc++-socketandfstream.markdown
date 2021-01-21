@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 소켓과 파일 입출력의 유사성
+title: <C/C++> 01. 소켓과 파일 입출력의 유사성
 date: 2021-01-14 13:25:23 +0900
 category: C/C++
 comments: true

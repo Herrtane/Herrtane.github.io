@@ -1,0 +1,45 @@
+---
+layout: post
+title: <C/C++> 03. Call by Reference의 명확한 의미, C++에서의 enum
+date: 2021-01-21 13:59:23 +0900
+category: C/C++
+comments: true
+---
+## Call by Reference의 명확한 의미
+
+잠시, 윤성우 선생님의 <열혈 C++ 프로그래밍> 책에서 배웠던 내용을 인용하겠다.
+
+C언어에서 말하는 Call by Reference의 정확한 의미는 다음과 같다.
+
+> **주소 값을 전달받아서, 함수 외부에 선언된 변수에 접근하는 형태의 함수호출.**
+
+즉, 주소 값이 외부 변수의 참조도구로 사용되는 함수의 호출을 뜻한다. 이렇듯 주소 값이 전달되었다는 사실이 중요한 게 아니라, 주소 값이 참조의 도구로 사용되었다는 사실이 중요한 것이며, 이것이 Call by Value와 Call by Reference를 구분하는 기준이 된다. C++에서는 함수 외부에 선언된 변수의 접근 방법으로 두 가지가 존재한다.
+1. 주소 값을 이용한 Call by Reference
+2. 참조자를 이용한 Call by Reference
+
+사견이지만, 나는 참조자보다 포인터가 훨씬 안전하고 가독성 높은 방법이라고 생각한다. 불가피하게 참조자를 사용할 경우는 어쩔 수 없지만, 가급적이면 나는 포인터를 지향한다. 
+
+## C++에서의 enum
+
+namespace를 사용해서 enum을 포함시키면, 코드의 가독성이 좋아진다.
+
+```cpp
+namespace CAR_CONST{
+    enum{
+        ID_LEN      =20,
+        MAX_SPD     =200,
+        FUEL_STEP   =2,
+        ACC_STEP    =10,
+        BRK_STEP    =10
+    };
+}
+
+...
+Func(CAR_CONST::ID_LEN);
+...
+
+```
+
+<br/>
+
+다음 포스팅에서도 C++을 복습하면서 기억하면 좋을 부분을 기록하도록 하겠다.
