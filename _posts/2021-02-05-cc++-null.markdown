@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <C/C++> 08. 배열과 null에서 자주 혼동하는 부분
+title: <C/C++> 09. 배열과 null에서 자주 혼동하는 부분
 date: 2021-02-05 14:03:23 +0900
 category: C/C++
 comments: true
@@ -29,7 +29,7 @@ comments: true
     ...
     string[11] = 'x';
     string[12] = '\0';
-    ``
+    ```
 4. 널 문자가 없을 경우, 내가 자주 보는 그 **유명한 한자**가 막 출력된다. 쓰레기값을 그대로 출력하기 때문이다.
 
 ## 마치며
