@@ -1,7 +1,7 @@
 ---
 layout: post
 title: <Linux System> 02. 배경지식
-date: 2021-06-28 23:00:23 +0900
+date: 2021-06-28 23:50:23 +0900
 category: Linux_System
 comments: true
 ---
