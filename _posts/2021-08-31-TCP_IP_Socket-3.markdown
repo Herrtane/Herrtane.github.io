@@ -1,7 +1,7 @@
 ---
 layout: post
 title: <TCP/IP Socket> 05. bind()에 대하여
-date: 2021-08-31 20:49:23 +0900
+date: 2021-08-31 20:50:23 +0900
 category: TCP/IP_Socket
 comments: true
 ---
