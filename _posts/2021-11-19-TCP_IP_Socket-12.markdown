@@ -1,9 +1,9 @@
 ---
-layout​: ​post
-title​: ​<TCP/IP Socket> 14. 다중접속 서버 - 멀티쓰레딩 기반 (2)
-date​: ​2021-11-19 20:50:23 +0900
-category​: ​TCP/IP_Socket
-comments​: true
+layout: post
+title: <TCP/IP Socket> 14. 다중접속 서버 - 멀티쓰레딩 기반 (2)
+date: 2021-11-19 20:50:23 +0900
+category: TCP/IP_Socket
+comments: true
 ---
 
 ## 쓰레드의 문제점과 임계영역
