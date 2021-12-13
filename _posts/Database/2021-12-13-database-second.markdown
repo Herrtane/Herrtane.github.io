@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <Database> 05. 관계 데이터 모델의 개념
+title: <Database> 06. 관계 대수
 date: 2021-12-13 20:20:23 +0900
 category: Database
 comments: true
@@ -21,12 +21,12 @@ comments: true
 ### selection
 
 - 한 릴레이션에서 predicate를 만족하는 투플들의 부분집합을 생성
-- 기호 : σ<실렉션조건>(릴레이션) 
+- 기호 : σ <실렉션조건> (릴레이션) 
 
 ### projection
 
 - 한 릴레이션의 애트리뷰트들의 부분집합을 생성
-- 기호 : π<애트리뷰트 리스트>(릴레이션)
+- 기호 : π <애트리뷰트 리스트> (릴레이션)
 - 투플의 중복은 제거해야 함. 
 
 ### 집합 연산자
