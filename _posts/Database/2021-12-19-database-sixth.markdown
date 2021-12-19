@@ -1,12 +1,12 @@
 ---
 layout: post
 title: <Database> 10. 뷰와 시스템 카탈로그
-date: 2021-12-19 23:35:23 +0900
+date: 2021-12-19 23:32:23 +0900
 category: Database
 comments: true
 ---
 
-## 뷰 
+## 뷰
 
 - 다른 릴레이션으로부터 유도된 릴레이션 (derived relation)
 - 기존의 기본 릴레이션 (base relation)이나 또 다른 뷰에 대한 SELECT문의 형태로 정의되는 가상 릴레이션 (virtual relation)
