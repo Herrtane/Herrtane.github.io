@@ -20,7 +20,7 @@ comments: true
 - ALTER TABLE
 - DROP DOMAIN, TABLE, VIEW, INDEX 
 
-- 예시 코드 
+CREATE 예시문
 
 ```
 CREATE TABLE STUDENT
@@ -32,6 +32,16 @@ CLASSNO NUMBER CHECK (CLASSNO IN (1,2,3,4,5,6)) DEFAULT 1,
 PRIMARY KEY (STUNO),
 FOREIGN KEY (CLASSNO) REFERENCES CLASS (CLASSNO) ON DELETE CASCADE);
 ``` 
+
+아래는 무결성 제약조건을 추가, 삭제하는 과정이다. STUDENT_PK라는 이름의 제약조건을 추가하고, 삭제한다.
+ALTER TABLE문을 통해 언제든지 릴레이션에 제약조건을 추가, 삭제할 수 있음을 기억하자.
+
+```
+ALTER TABLE STUDENT ADD CONSTRAINT STUDENT_PK
+PRIMARY KEY (STUNO);
+
+ALTER TABLE STUDENT DROP CONSTRAINT STUDENT_PK;
+```
 
 ### 애트리뷰트의 제약조건 
 
