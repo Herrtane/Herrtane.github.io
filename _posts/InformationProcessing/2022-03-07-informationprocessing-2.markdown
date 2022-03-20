@@ -11,9 +11,29 @@ comments: true
 - IDE (Integrated Development Environment) : Editor, Compiler, Debugger 등 다양한 툴을 하나의 인터페이스로 통합해 제공하는 도구.
 - 빌드 자동화 도구
     - Ant
+        - Apache 재단에서 개발한 Java Project의 공식 빌드 자동화 도구
+        - XML기반 빌드 스크립트 사용
+        - 정해진 표준이 없어 개발자가 모든 것을 정의
+        - 스크립트 재사용이 어려움
     - Maven
+        Apache 재단에서 Ant 대안으로 개발
+        - 정해진 표준이 존재해 예외사항만 기록됨
+        - 컴파일과 빌드 동시 수행 가능
+        - 의존성 (Dependency)을 설정하여 라이브러리 관리
     - Gradle
+        - Ant와 Maven을 보완해 개발된 도구
+        - 안드로이드 스튜디오의 공식 빌드 자동화 도구
+        - 의존성 활용
+        - Groovy (프로그래밍 언어 중 하나) 기반의 빌드 스크립트 사용
+        - 플러그인 설정시 Java, C/C++, Python 언어도 사용 가능
+        - 실행할 처리 명령들을 모아 Task단위로 실행
+        - 이전에 사용한 Task를 재사용하거나 타인의 Task를 공유하는 등 빌드 캐시 기능 지원 : 빌드 속도 향상
     - Jenkins
+        - Java 기반의 오픈소스 형태
+        - 서블릿 컨테이너에서 실행되는 서버 기반 도구
+        - SVN, Git 등 대부분의 SCM 도구와 연동 가능
+        - 친숙한 Web GUI 제공
+        - 여러대의 컴퓨터를 이용한 분산 빌드 및 테스트 가능
 - 협업 도구 (Groupware)
 
 ## 패키징
