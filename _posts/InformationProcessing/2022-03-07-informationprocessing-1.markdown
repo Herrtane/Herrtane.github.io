@@ -115,9 +115,9 @@ comments: true
 
 - SRP (Single Responsibility Principle) : 한 클래스는 하나의 책임만 져야 한다. 응집도는 높이고, 결합도는 낮춘다. 
 - OCP (Open - Closed Principle) : 소프트웨어 요소는 확장에는 열려있으나 변경에는 닫혀있어야 한다.
-- LSP (Liskov Substitution Principle) : 자식클래스는 부모클래스에서 가능한 행위를 수행할 수 있어야 한다.
+- LSP (Liskov Substitution Principle) : 자식클래스는 부모클래스에서 가능한 행위를 수행(치환)할 수 있어야 한다. 즉, 상속을 의미한다.
 - ISP (Interface Segregation Principle) : 한 클래스는 자신이 사용하지 않는 인터페이스는 구현하지 말아야 한다. 하나의 일반적인 인터페이스보다 여러개의 구체적인 인터페이스가 낫다는 뜻이며, 자신이 사용하지 않는 기능 (인터페이스)에는 영향을 받지 말아야 한다는 뜻이다.
-- DIP (Dependency Inversion Principle) : 의존관계를 맺을 때, 구체적인 클래스보다 인터페이스나 추상 클래스와 관계를 맺어야 한다.
+- DIP (Dependency Inversion Principle) : 의존관계를 맺을 때, 구체적인 클래스보다 인터페이스나 추상 클래스와 관계를 맺어야 한다. 즉, 변화하기 쉬운 것보다 변화하지 않는 것에 의존해야 한다.
 - Demeter's Law : '친한 친구하고만 이야기하라.' = 동일한 객체 내의 메소드 및 속성을 주로 사용해야 한다.
 
 ## UI (User Interface)
@@ -131,11 +131,11 @@ comments: true
 
 ### UI 설계 도구
 
-- Wireframe : 레이아웃을 협의하고 공유하기 위해 사용
-- Story Board : 최종적으로 참고하는 작업 지침서, 산출물
-- Prototype : 실제 구현된 것 처럼 테스트가 가능한 동적인 모형
-- Mockup : 실제 화면과 유사한 정적인 모형
-- Use Case : 사용자 측면 요구사항을 다이어그램으로 묘사
+- Wireframe : 기획 단계의 초기에 제작. 페이지에 대한 개략적인 레이아웃과 뼈대를 협의하고 공유하기 위해 사용.
+- Mockup : wireframe보다 좀 더 실제 화면과 유사하게 만든 정적인 모형.
+- Story Board : wireframe에 컨텐츠에 대한 설명, 페이지 간 이동 흐름 등을 추가한 문서. 최종적으로 참고하는 작업 지침서.
+- Prototype : wireframe이나 story board등에 인터렉션을 적용함으로써, 실제 구현된 것 처럼 테스트가 가능한 동적인 모형. paper prototype과 digital prototype으로 나뉨.
+- Use Case : 사용자 측면 요구사항을 다이어그램으로 묘사.
 
 ## 품질 요구사항
 
