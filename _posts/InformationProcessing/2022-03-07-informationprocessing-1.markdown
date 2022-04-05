@@ -223,7 +223,13 @@ comments: true
 
 ## 코드
 
-- 순차코드, 블록코드, 10진코드, 그룹분류코드, 표의숫자코드, 연상코드, 합성코드 
+- 순차코드 (Sequence)
+- 블록코드 (Block)
+- 10진코드 (Decimal)
+- 그룹분류코드 (Group Classification)
+- 표의숫자코드 (Significant Digit)
+- 연상코드 (Mnemonic)
+- 합성코드 (Combined)
 
 ## 개발 기술 환경
 
@@ -235,7 +241,7 @@ comments: true
 
 ### 미들웨어 솔루션의 종류
 
-- RPC (Remote Proceduce Call) : 원격 프로시저 호출 미들웨어.
+- RPC (Remote Procedure Call) : 원격 프로시저 호출 미들웨어.
 - MOM (Message Oriented Middleware) : 메시지 기반 비동기형 메시지를 전달하는 미들웨어.
 - DB
 - TP Monitor : 빠른 응답속도가 필요한 업무에 사용되는 트랜잭션 처리 및 감시 미들웨어. 항공기나 철도 예약 업무 등에 최적.
