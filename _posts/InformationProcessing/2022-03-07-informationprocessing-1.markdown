@@ -124,10 +124,10 @@ comments: true
 
 ### UI 설계의 기본원칙
 
-- 직관성 : 누구나 쉽게 이해하고 사용할 수 있어야 함.
-- 유효성 : 사용자의 목적을 정확히 달성해야 함.
-- 학습성 : 쉽게 배우고 익힐 수 있어야 함.
-- 유연성 : 사용자의 요구사항을 최대한 수용하고 실수를 최소화해야 함.
+- 직관성 (Intuitiveness) : 누구나 쉽게 이해하고 사용할 수 있어야 함.
+- 유효성 (Efficiency) : 사용자의 목적을 정확히 달성해야 함.
+- 학습성 (Learnability) : 쉽게 배우고 익힐 수 있어야 함.
+- 유연성 (Flexibility) : 사용자의 요구사항을 최대한 수용하고 실수를 최소화해야 함.
 
 ### UI 설계 도구
 
@@ -159,12 +159,12 @@ comments: true
 ### ISO/IEC 15504 (SPICE)
 
 - ISO/IEC 12207를 기본 틀로하여, 12207의 프로세스를 평가하고 개선할 목적으로 고안됨.
-- 불완전 (Lv.0) > 수행 (Lv.1) > 관리 (Lv.2) > 확립 (Lv.3) > 예측가능 (Lv.4) > 최적화 (Lv.5)
+- 불완전 (Lv.0, Incomplete) > 수행 (Lv.1, Performed) > 관리 (Lv.2, Managed) > 확립 (Lv.3, Established) > 예측가능 (Lv.4, Predictable) > 최적화 (Lv.5, Optimizing)
 
 ### CMMI (Capability Maturity Model Integration)
 
 - 성숙도와 능력도를 평가하는 모델
-- 초기 > 관리 > 정의 > 정량적 관리 > 최적화
+- 초기 (Initial) > 관리 (Managed) > 정의 (Defined) > 정량적 관리 (Quantitatively Managed) > 최적화 (Optimizing)
 
 ## 아키텍쳐
 
@@ -203,12 +203,12 @@ comments: true
 ### 결합도 (Coupling)
 
 - 결합도는 낮을수록 좋음.
-- 내용 (Content) : 모듈간 직접 참조
-- 공유 (Common) : 모듈간 전역 변수 사용
-- 외부 (External) : 한 모듈의 변수를 외부에서 다른 모듈이 참조
-- 제어 (Control) : 모듈간 제어를 위한 제어 신호, 제어 요소를 전달
-- 스탬프 (Stamp) : 모듈간 자료구조 전달
-- 자료 (Data) : 모듈간 매개변수로 데이터 전달
+- 내용 (Content) : 모듈간 직접 참조. 다른 모듈 내부에 있는 변수나 기능을 사용하는 경우.
+- 공유 (Common) : 모듈간 전역 변수를 참조 및 갱신.
+- 외부 (External) : 한 모듈의 반환값을 외부에서 다른 모듈이 참조.
+- 제어 (Control) : 모듈간 값만 전달하는 것이 아닌, 어떻게 처리를 할 것인지에 대한 제어 신호, 제어 요소를 전달.
+- 스탬프 (Stamp) : 모듈간 인터페이스로 자료구조, 배열, 객체 등을 전달.
+- 자료 (Data) : 모듈간 매개변수로만 데이터 전달.
 
 ### 응집도 (Cohesion)
 
