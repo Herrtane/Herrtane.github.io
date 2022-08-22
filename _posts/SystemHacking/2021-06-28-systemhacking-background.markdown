@@ -1,8 +1,8 @@
 ---
 layout: post
-title: <Linux System> 02. 배경지식
+title: <System Hacking> 02. 배경지식
 date: 2021-06-28 23:50:23 +0900
-category: Linux_System
+category: System_Hacking
 comments: true
 ---
 

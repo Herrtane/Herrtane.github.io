@@ -1,8 +1,8 @@
 ---
 layout: post
-title: <Linux System> 01. 서론
+title: <System Hacking> 01. 서론
 date: 2021-06-28 23:00:23 +0900
-category: Linux_System
+category: System_Hacking
 comments: true
 ---
 

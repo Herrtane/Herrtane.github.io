@@ -1,8 +1,8 @@
 ---
 layout: post
-title: <Linux System> 03. find, daemon process, link (F.T.Z ~Level8) 
+title: <System Hacking> 03. find, daemon process, link (F.T.Z ~Level8) 
 date: 2021-06-30 22:20:23 +0900
-category: Linux_System
+category: System_Hacking
 comments: true
 ---
 
