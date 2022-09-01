@@ -55,4 +55,4 @@ $ xxd shellcode.bin // shellcode를 16진수 기계어로 추출
 
 ## 마치며
 
-이렇게 구한 shellcode를 stack buffer overflow 취약점을 통해 stack에 삽입하여 shell을 획득하는 과정을 다음 포스팅에서 다루겠다!
+이렇게 구한 shellcode를 stack buffer overflow 취약점을 통해 stack에 삽입하여 shell을 획득하는 기법이 존재한다. 이는 조만간 다루도록 하겠다.
