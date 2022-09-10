@@ -37,17 +37,33 @@ char a = buf[0x81];
 pwntool 등의 파이썬 도구를 다루다보면, b'hello' 같은 바이트 문자열을 자주 다루게 되는데, 생긴건 문자열이지만, 내부적으로는 사람이 읽기 힘든 인코딩된 바이트이다.
 
 ```python
+#encode
 >>> 'I am a string'.encode('ascii')
 b'I am a string'
 
 >>> 'I am a string'.encode('utf-16')
 b'\xff\xfeI\x00 \x00a\x00m\x00 \x00a\x00\x00s\x00t\x00r\x00i\x00n\x00g\x00'
 
+>>> print(bytes('I am a string', 'utf-8'))
+b'I am a string'
+
+# decode
 >>> b'I am a string'.decode('ascii')
+'I am a string'
+
+>>> print(str(b'I am a string','utf-8'))
 'I am a string'
 ```
 
 위의 예시 코드를 보면, ascii로 인코딩할 경우, 사람이 읽을 수 있는 것 처럼 보이지만 결국 바이트 문자열이다. utf-16으로 인코딩할 경우, 바이트 문자열의 본 모습을 보게 된다. (참고로 둘다 똑같은 바이트 문자열이다.)
+
+<br/>
+
+Dreamhack 실습문제나 wargame을 풀다보면, payload를 작성할 때, 언제는 str()로 해서 보내고, 언제는 p64()로 패킹해서 보내고, 기준이 파악이 안될때가 많은데, 정답은 **Little endian으로 인해 달라진다.**
+
+<br/>
+
+일반적으로는 문자열을 보낼때는 str()을, 메모리 주소를 보낼때는 p64()를 쓴다. 문자열은 메모리 상에서 8바이트 단위로 반전되어서 저장되고 읽히나, 메모리 주소는 정방향 그대로 저장되고 읽힌다. 이때, 사용자로 부터 받는 모든 입력은 역방향으로 저장되기 때문에, 문자열은 그냥 그대로 전송하는 것이고, 메모리 주소는 p64()로 반전시켜서 메모리에 입력되었을 때, 다시 반전되어 정방향으로 저장되게 하기 위함이다.
 
 <br/>
 
