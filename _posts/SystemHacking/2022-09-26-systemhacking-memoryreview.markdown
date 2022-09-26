@@ -12,7 +12,7 @@ comments: true
 
 ![memorylayout]({{site.url}}/img/memorylayout.png)
 
-Dreamhack에서 가져온 출처의 그림이다.
+Dreamhack에서 가져온 출처의 그림이다. 위의 주소가 0x0000... 아래의 주소가 0xffff.... 이다. 그림이 짤려서 말로 설명을 추가한다.
 
 1. Code segment : Text segment라고도 부름. 실행 가능한 기계 코드가 담겨있음. rw-
 2. Data segment : data segment에는 실행하면서 값이 변할 수 있는 전역변수가 위치. rodata segment에는 값이 변하면 안되는 전역상수가 위치.
