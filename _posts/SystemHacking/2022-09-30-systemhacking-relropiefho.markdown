@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 17. 배경지식 - RELRO, PIE, 그리고 HO(Hook Overwrite)
+title: <System Hacking> 17. RELRO, PIE, 그리고 HO(Hook Overwrite)
 date: 2022-09-30 20:30:23 +0900
 category: System_Hacking
 comments: true
