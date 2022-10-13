@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 18. Format String Bug
+title: <System Hacking> 19. Format String Bug
 date: 2022-10-06 10:30:23 +0900
 category: System_Hacking
 comments: true

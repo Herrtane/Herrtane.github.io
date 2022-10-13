@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 19. Heap, 그리고 ptmalloc2
+title: <System Hacking> 20. Heap, 그리고 ptmalloc2
 date: 2022-10-13 10:30:23 +0900
 category: System_Hacking
 comments: true
