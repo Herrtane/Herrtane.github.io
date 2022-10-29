@@ -13,23 +13,35 @@ comments: true
 ### Valve Index VR를 활용한 2.5D Display Project
 
 Contributer : 정민영, 이철한
+
 Language : C#
+
 Environment : Windows, Unity, Valve Index (Steam VR)
-Category : VR, Unity 
-[link](https://github.com/minyeong97-herrtane/2.5D)
+
+Category : VR, Unity
+
+[https://github.com/minyeong97-herrtane/2.5D](https://github.com/minyeong97-herrtane/2.5D)
 
 ### TCP/IP Socket 채팅 클라이언트 프로그램 (with. QT GUI Programming)
 
 Contributer : 이철한
+
 Language : C/C++
+
 Environment : Windows
+
 Category : TCP/IP socket programming, GUI Programming
-[link](https://github.com/Herrtane/GUIChatClientProgram)
+
+[https://github.com/Herrtane/GUIChatClientProgram](https://github.com/Herrtane/GUIChatClientProgram)
 
 ### 가정 물건 기록 및 정리 프로그램 (with. QT GUI Programming)
 
 Contributer : 이철한
+
 Language : C++
+
 Environment : Windows
+
 Category : Data Structure, GUI Programming
+
 (링크 추가중)
