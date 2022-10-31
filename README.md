@@ -14,6 +14,10 @@ permalink: /about/
 또한, 게임과 음악을 사랑하며, 감성을 중요한 가치로 생각하며 살아갑니다.<br/>
 이 곳에 방문하신 모든 여러분들을 진심으로 환영합니다.<br/>
 
+<br/>
+
+제가 진행했던 프로젝트들을 보시려면, MyProjects 카테고리를 클릭해주세요.<br/>
+
 ### Profile
 - South Korea
 - Kyunghee Univ.
