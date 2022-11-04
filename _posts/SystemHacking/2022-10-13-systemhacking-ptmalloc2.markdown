@@ -134,7 +134,7 @@ struct malloc_state
 
 <br/>
 
-아래는 각각 동일한 크기의 free chunk를 관리하는 구조체, 전체적인 tcache list를 관리하는 구조체이다.
+아래는 각각 동일한 크기의 free chunk를 관리하는 구조체, 전체적인 tcache list를 관리하는 구조체이다. (최근 Double free Bug를 방지하기 위해 코드가 추가되었으나, 여기선 기본적인 코드만 적어놓았다. 이후 포스팅에서 추가된 부분을 다룰 것이다.)
 
 ```c
 typedef struct tcache_entry
@@ -150,10 +150,19 @@ typedef struct tcache_perthread_struct
 } tcache_perthread_struct;
 ```
 
-참고로 **tcache는 다른 bin들과 달리 main_arena에 존재하지 않고 tcache_perthread_struct에 존재**한다.
+몇가지 정리해두면 좋을 tcache에 대한 내용들이다. 
+
+1. **tcache는 다른 bin들과 달리 main_arena에 존재하지 않고 tcache_perthread_struct에 존재**한다.
+2. fastbin과 거의 비슷한 구조를 가지고 있다.(LIFO, single linked list)
+3. fastbin에서 fd는 다음 청크의 prev_size를 가리키지만 tcache에서 next는 다음 청크의 next부분을 가리킨다.
+4. tcache에서 **bin의 개수는 일반적으로 64개**이며 각각 서로 다른 크기의 chunk들을 bin에 저장하는데 최대 7개의 청크까지 저장할 수 있다.
+5. tcache에 들어갈 수 있는 크기의 청크가 free되면 tcache에 먼저 저장된다.(최대 7개까지 이후에는 각자 자신의 크기에 맞는 bin에 들어감)
+6. fastbin, unsorted bin, small bin에 저장되어 있는 free 청크를 재할당하는데 사용되면 나머지 free 청크들은 tcache로 옮겨진다.
 
 ## 마치며
 
 heap에서 구체적으로 어떻게 메모리가 할당되고 관리되는지, ptmalloc2를 기준으로 알아보았다. 중요한 내용이라 다소 긴 줄글로 포스팅을 했다. stack보다 상당히 복잡하기 때문에 개념적으로 확실하게 공부해두어야 이후 심화적인 내용을 다룰 때 지장이 없을 것 같다.
 
 (11/4. 부족하거나 헷갈렸던 부분에 대한 많은 내용 보충 정리)
+
+[https://rninche01.tistory.com/entry/heap5-tcacheThread-local-Caching](https://rninche01.tistory.com/entry/heap5-tcacheThread-local-Caching)의 내용을 참고했다. 정말 자세하게 정리가 되어있는 블로그라서 감사하게도 내가 몰랐던 부분을 이해하는 데에 큰 도움이 되었다.
