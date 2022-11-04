@@ -130,7 +130,27 @@ struct malloc_state
 
 ### tcache (thread local cache)
 
-이름에서 알 수 있듯, 각 쓰레드에 독립적으로 할당되는 캐시 저장소를 지칭한다. 각 쓰레드는 64개의 tcache를 가지고 있는데, fastbin과 마찬가지로 LIFO방식으로 사용되는 single-linked list이며, 하나의 tcache는 같은 크기의 청크들만 보관한다. 리눅스는 각 tcache에 7개의 청크까지만 보관하게끔 하는데, 무제한으로 연결할 경우 메모리가 낭비될 수 있기 때문이다. 32바이트 이상 1040바이트 이하의 청크들이 보관되며, 이 범위에 속한 청크들은 할당 및 해제시 tcache를 가장 먼저 조회한다. tcache가 가득 찼을 경우, 적절한 bin으로 분류된다. arena의 bin에 접근하기 전에 tcache를 먼저 사용하므로 arena에서 발생할 수 있는 병목 현상을 완화한다.
+이름에서 알 수 있듯, **각 쓰레드에 독립적으로 할당되는 캐시 저장소**를 지칭한다. tcache는 **작은 단위의 메모리 할당이 필요할 경우 arena를 참조하지 않고 바로 메모리를 할당할 수 있도록 각 스레드 당 thread cache라는 영역을 제공함으로써 메모리 할당 속도를 높일 수 있는 기술**이다. 각 쓰레드는 64개의 tcache를 가지고 있는데, fastbin과 마찬가지로 LIFO방식으로 사용되는 single-linked list이며, 하나의 tcache는 같은 크기의 청크들만 보관한다. 리눅스는 각 tcache에 7개의 청크까지만 보관하게끔 하는데, 무제한으로 연결할 경우 메모리가 낭비될 수 있기 때문이다. 32바이트 이상 1040바이트 이하의 청크들이 보관되며, 이 범위에 속한 청크들은 할당 및 해제시 tcache를 가장 먼저 조회한다. tcache가 가득 찼을 경우, 적절한 bin으로 분류된다. arena의 bin에 접근하기 전에 tcache를 먼저 사용하므로 arena에서 발생할 수 있는 병목 현상을 완화한다.
+
+<br/>
+
+아래는 각각 동일한 크기의 free chunk를 관리하는 구조체, 전체적인 tcache list를 관리하는 구조체이다.
+
+```c
+typedef struct tcache_entry
+{
+  struct tcache_entry *next;                // next포인터를 통해 다음 동일한 크기의 free chunk 연결
+} tcache_entry;
+
+typedef struct tcache_perthread_struct
+{
+  // TCACHE_MAX_BINS는 64bit기준 64
+  char counts[TCACHE_MAX_BINS];             // entries배열의 각 인덱스에 single linked list로 연결되어 있는 청크의 개수 기록 (single list당 최대 7개의 청크 제한)
+  tcache_entry *entries[TCACHE_MAX_BINS];   // fastbin과 같이 single linked list의 구조로 배열의 동일한 인덱스에는 동일한 크기의 free chunk들로 연결되어 있음
+} tcache_perthread_struct;
+```
+
+참고로 **tcache는 다른 bin들과 달리 main_arena에 존재하지 않고 tcache_perthread_struct에 존재**한다.
 
 ## 마치며
 
