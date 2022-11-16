@@ -12,7 +12,7 @@ Canary에 이어서 ASLR과 NX, PIE, RELRO 등의 보호기법등은, 한마디�
 
 1. Canary : Stack의 Buffer와 SFP 사이에 임의의 값을 추가하여 **Return Address를 보호** -> Return Address Overwrite 방어. Return To Shellcode 공격으로 카나리 우회
 2. ASLR : 바이너리가 실행될 때 마다 **스택, 힙, 공유 라이브러리 등을 임의의 주소에 할당** 
-3. NX : **Code segment외에 Stack, Heap, Data segment에는 실행 권한을 제거** -> Return To Shellcode 방어. Return To Library 공격으로 NX, ASLR 우회 (실행 권한이 남아있는 Code segment인 바이너리의 코드 영역과 라이브러리의 코드 영역. 비록 ASLR로 라이브러리의 주소는 무작위 주소로 매핑되나, PIE가 없다면 PLT의 주소는 고정. Return gadget 등을 활용하여 레지스터 값을 원하는 대로 조정하고, 연쇄 체인 흐름 형성.) 이를 확장하여 Return Oriented Programming 공격. 
+3. NX : **Code segment외에 Stack, Heap, Data segment에는 실행 권한을 제거** -> Return To Shellcode 방어. Return To Library 공격 (공유 라이브러리 함수의 주소를 가져와 RET에 overwrite 하고 이를 호출하는 공격기법)으로 NX우회 (실행 권한이 남아있는 Code segment인 바이너리의 코드 영역과 라이브러리의 코드 영역. 비록 ASLR로 라이브러리의 주소는 무작위 주소로 매핑되나, PIE가 없다면 PLT의 주소는 고정.) 이를 확장하여 Return Oriented Programming 공격 (Return gadget 등을 활용하여 레지스터 값을 원하는 대로 조정하고, 연쇄 체인 흐름 형성.) 
 4. RELRO : 쓰기권한이 불필요한 **Data segment에 쓰기 권한을 제거 (Partial과 Full로 나뉨)**
 5. PIE : **ASLR을 Code segment에도 적용**
 
