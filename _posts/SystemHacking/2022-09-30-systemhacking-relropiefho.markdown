@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 17. RELRO, PIE, 그리고 HO(Hook Overwrite)
+title: <System Hacking> 17. RELRO, PIE, 그리고 Hook Overwrite
 date: 2022-09-30 20:30:23 +0900
 category: System_Hacking
 comments: true
@@ -35,9 +35,63 @@ PIE는 ASLR이 코드영역에도 적용되게 해주는 기술이다. 원래는
 
 ASLR이 도입되기 전에는 리눅스 실행파일들이 재배치를 고려하지 않고 만들어졌지만, 도입 이후에는 재배치를 원했고, 그러나 기존의 파일들을 뜯어고칠수는 없었기 떄문에, SO를 실행파일로 사용하기로 한 것이다. 이들을 PIE라고 한다.
 
-## HO (Hook Overwrite)
+## Hook Overwrite
 
-위에서 Full RELRO의 경우, 기존의 GOT overwrite 기법이 막히게 되므로, 새로운 공격방법을 모색해야 하는데, 그 중 라이브러리에 위치한 **hook**을 이용하는 공격기법이 생겨났다. 대표적으로 malloc, realloc, free함수를 호출할 때, 함수의 초반부에서 동적 메모리의 할당과 해제 과정에서 발생하는 버그를 디버깅하기 위해 __malloc_hook, __free_hook 등의 포인터 존재여부를 검사한다. 이 변수들은 **libc.so에서 쓰기 가능한 영역에 위치**하므로, libc가 매핑된 주소를 알때 이 변수를 조작하고 malloc, realloc, free 등을 호출하여 실행흐름을 조작할 수 있다.
+위에서 Full RELRO의 경우, 기존의 GOT overwrite 기법이 막히게 되므로, 새로운 공격방법을 모색해야 하는데, 그 중 라이브러리에 위치한 **hook**을 이용하는 공격기법이 생겨났다. 대표적으로 malloc, realloc, free함수를 호출할 때, 함수의 초반부에서 동적 메모리의 할당과 해제 과정에서 발생하는 버그를 디버깅하기 위해 __malloc_hook, __free_hook 등의 포인터 존재여부를 검사한다. 이 변수들은 **libc.so에서 쓰기 가능한 bss section에 위치**하므로, libc가 매핑된 주소를 알때 이 변수를 조작하고 malloc, realloc, free 등을 호출하여 실행흐름을 조작할 수 있다. **훅을 실행할 때 기존 함수에 전달한 인자를 같이 전달해 주기 때문에 __malloc_hook을 system 함수의 주소로 덮고, malloc(“/bin/sh”)을 호출하여 셸을 획득하는 등의 공격이 가능**하다.
+
+<br/>
+
+```c
+void *__libc_malloc (size_t bytes)
+{
+  mstate ar_ptr;
+  void *victim;
+  void *(*hook) (size_t, const void *)
+    = atomic_forced_read (__malloc_hook); // malloc hook read
+  if (__builtin_expect (hook != NULL, 0))
+    return (*hook)(bytes, RETURN_ADDRESS (0)); // call hook
+#if USE_TCACHE
+  /* int_free also calls request2size, be careful to not pad twice.  */
+  size_t tbytes;
+  checked_request2size (bytes, tbytes);
+  size_t tc_idx = csize2tidx (tbytes);
+  // ...
+}
+```
+
+위의 소스코드는 glibc의 malloc.c의 일부이며, 함수의 프롤로그에서 __malloc_hook을 검사하여 호출하는 과정이 들어있다. (참고로, 최근 소스코드에서는 보안이슈로 이 부분이 삭제된 것 같다. 일단 hook에 대한 개념을 잡기위해 예전 소스코드를 가져왔다.)
+
+```c
+void weak_variable (*__free_hook) (void *, const void *) = NULL;
+void *weak_variable (*__malloc_hook) (size_t, const void *) = NULL;
+void *weak_variable (*__realloc_hook) (void *, size_t, const void *) = NULL;
+void *weak_variable (*__memalign_hook) (size_t, size_t, const void *) = NULL;
+compat_symbol (libc, __free_hook, __free_hook, GLIBC_2_0);
+compat_symbol (libc, __malloc_hook, __malloc_hook, GLIBC_2_0);
+compat_symbol (libc, __realloc_hook, __realloc_hook, GLIBC_2_0);
+compat_symbol (libc, __memalign_hook, __memalign_hook, GLIBC_2_0);
+```
+
+위의 소스코드는 glibc.c의 hook.c의 일부이며, 실제 hook들의 모습을 나타낸다.
+
+```c
+// Name: fho-poc.c
+// Compile: gcc -o fho-poc fho-poc.c
+#include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
+
+const char *buf="/bin/sh";
+
+int main() {
+  printf("\"__free_hook\" now points at \"system\"\n");
+  __free_hook = (void *)system;
+  printf("call free(\"/bin/sh\")\n");
+  free(buf);
+}
+```
+
+위의 소스코드는 Dreamhack의 강의 내용으로, 간단하게 hook overwrite를 이용한 공격을 c언어로 구현한 것이다. 보면, __free_hook이 가리키는 주소를 (void*)system으로 변경하고, /bin/sh 문자열이 담긴 buf를 free의 인자로 넘겨서, 결과적으로는 쉘을 획득하도록 하는 과정을 볼 수 있다.
 
 ```c
 // Name: fho.c
@@ -87,7 +141,7 @@ int main() {
 
 <br/>
 
-이럴 때, one gadget을 사용하는 방법이 가능하다면, 이 방법을 쓸 수 있다. one gadget에 대한 내용은 생략하겠다. one_gadget을 이용해 libc 내의 one-shot gadget의 오프셋을 구할 수 있다.
+이럴 때, one gadget을 사용하는 방법이 가능하다면, 이 방법을 쓸 수 있다. one gadget에 대한 내용은 추후 자세히 포스팅하겠다. one_gadget을 이용해 libc 내의 one-shot gadget의 오프셋을 구할 수 있다.
 
 <br/>
 
@@ -101,3 +155,7 @@ read함수에 해당하는 스택프레임의 rbp-0x40의 위치가 buf인줄알
 ## 마치며
 
 Payload를 짜는 과정에서는 큰 난항이 없었고, 위에서 적었듯이 몇가지 개념들에서 혼동이 생겨서 시간이 걸렸던 문제라 Payload는 생략한다. 어쨌든, 이번 포스팅을 기점으로 더이상 컴파일에 의도적인 보호기법 해제를 적용하지 않는, RELRO, NX, Canary, PIE가 모두 적용된 온전한 파일을 분석할 수 있는 기초적인 수준까지 배우게 되었다..!
+
+<br/>
+
+2022.11.18 추가. Hook에 대한 추가 공부가 필요해서, 해당 부분에 필요한 실제 glibc 소스 코드를 분석한 내용을 추가했다. one gadget에 대한 내용은 따로 포스팅으로 할 예정이다.

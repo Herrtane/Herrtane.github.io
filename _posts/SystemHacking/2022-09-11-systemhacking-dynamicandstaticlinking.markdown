@@ -23,7 +23,7 @@ comments: true
 
 <br/>
 
-동적 링크된 바이너리를 실행하면 동적 라이브러리가 프로세스의 메모리에 매핑된다. 그리고 실행 중에 라이브러리의 함수를 호출하면, 매핑된 라이브러리에서 호출할 함수의 주소를 찾아서 실행한다. 이 과정에서 PLT(Procedure Linkage Table)와 GOT(Global Offset Table)이 사용된다.
+동적 링크된 바이너리를 실행하면 동적 라이브러리가 프로세스의 메모리에 매핑된다. 그리고 실행 중에 라이브러리의 함수를 호출하면, 매핑된 라이브러리에서 호출할 함수의 주소를 찾아서 실행한다. 이 과정에서 **PLT(Procedure Linkage Table)와 GOT(Global Offset Table)**이 사용된다.
 
 <br/>
 
@@ -44,8 +44,8 @@ int main() {
 
 <br/>
 
-PLT에서는 먼저 puts의 GOT에 쓰인 값으로 실행 흐름을 옮긴다. 이후 dl_runtime_resolve_xsavec라는 함수가 실행되는데, 이 
-함수에서 puts의 주소가 구해지고 (**PLT테이블이 필요한 이유**이다. GOT로 JMP하는 기능 외에도 함수의 주소를 구하는 데에 필요한 코드가 구현되어있다.), GOT에 주소가 쓰여진다.
+PLT에서는 먼저 puts의 GOT에 쓰인 값으로 실행 흐름을 옮긴다. 이후 **GOT에 아직 puts에 대한 실제 주소가 없기 때문에, 다시 puts@plt+n의 주소로 이동**한다. 그 이후 **dl_runtime_resolve_xsavec라는 함수가 실행**되는데, 이 
+함수에서 puts의 주소가 구해지고 (**PLT테이블이 필요한 이유**이다. GOT로 JMP하는 기능 외에도 함수의 주소를 구하는 데에 필요한 코드가 구현되어있다.), **최종적으로는 GOT에 실제 주소를 저장한 후, 해당 주소로 점프**하는 것이다.
 
 ### resolve된 후
 
@@ -54,3 +54,9 @@ PLT에서는 먼저 puts의 GOT에 쓰인 값으로 실행 흐름을 옮긴다. 
 ## 마치며
 
 오늘 내용은, 조만간 다룰 GOT overwrite라는 공격기법에서 중요하게 사용되는 개념이다. Return Oriented Programming에서 이 공격기법을 다루기 때문에, 개념을 따로 정리해두었다. 다음 포스팅부터는 내 체감상 이해하는데 시간이 걸린 부분들이 대거 등장할 예정이다.
+
+<br/>
+
+2022.11.18 추가. [https://bob3rdnewbie.tistory.com/190](https://bob3rdnewbie.tistory.com/190)
+
+.plt, .got 섹션이 과거에는 정확히 각각 Text, Data section에 존재했지만, 지금은 .got plt, .rel plt 가 생기면서 개념이 애매해졌는데, 위의 링크에서 해당 내용이 잘 설명되어있어서 추가한다. 그리고, 실제 readelf 명령어를 통해 해당 섹션의 모습을 잘 분석했고, Dynamic linking 과정을 gdb를 통해 잘 분석해놓아서 추후 종종 참고하기 위해 링크를 첨부하였다.
