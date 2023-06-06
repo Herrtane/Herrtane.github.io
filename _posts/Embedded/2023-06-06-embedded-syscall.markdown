@@ -40,7 +40,6 @@ int mysyscall(int n, int m){
     return syscall(__NR_mysyscall, n, m);
 }
 
-
 // Application.c
 #include <stdio.h>
 #include <unistd.h>
