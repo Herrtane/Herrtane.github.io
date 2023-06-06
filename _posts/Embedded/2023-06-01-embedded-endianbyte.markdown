@@ -2,7 +2,7 @@
 layout: post
 title: <Embedded> 1. 바이트코드, 인코딩, 그리고 학부연구생 이야기
 date: 2023-06-01 10:30:23 +0900
-category: Embedded
+category: Embedded/Kernel
 comments: true
 ---
 
