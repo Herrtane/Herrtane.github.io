@@ -50,7 +50,7 @@ IP주소와 Port숫자를 합친 주소를 **socket address**라고 한다.
 2. No flow and error control
 3. Bulk data를 sending하는 데에는 부적합 ex) FTP
 4. Simple data를 sending하는 데에 적합, Routing Information Protocol에 사용되기도 함
-5. Connectionless 하므로 송신측에서는 메시지가 소실되었거나 중복되었는지 알지 못하며, 수신단은 오로지 **checksum**을 통해서 메시지의 오류 여부를 알 수 있다. 만약 checksum에 문제가 있다면, 그 메시지는 그냥 버려진다.
+5. Connectionless 하므로 송신측에서는 메시지가 소실되었거나 중복되었는지 알지 못하며, 수신단은 오로지 **checksum**을 통해서 메시지의 오류 여부를 알 수 있음. 만약 checksum에 문제가 있다면, 그 메시지는 그냥 버려짐.
 
 ![UDP]({{site.url}}/img/UDP.jpg)
 
