@@ -9,7 +9,7 @@ comments: true
 
 ### 2. Transmission Control Protocol (TCP)
 
-TCP는 UDP와는 사뭇 다른 특징을 가졌다. Datagram방식이었던 UDP와는 반대로 virtual-circuit을 형성하는 connection-oriented이고, UDP보다 훨씬 더 깊은 flow and error control을 갖추었다.
+TCP는 UDP와는 사뭇 다른 특징을 가졌다. Datagram방식이었던 UDP와는 반대로 virtual-circuit을 형성하는 connection-oriented이고, UDP보다 훨씬 더 깊은 flow and error control을 갖추었다. 또한, **수신단까지 전송만 하는 IP와 다르게, TCP는 connection establishment, data transfer, connection termination의 단계를 요구**하며, full-duplex 모드를 통해 데이터 전송이 이루어진다.  
 
 <br/>
 
