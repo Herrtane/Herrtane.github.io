@@ -38,7 +38,7 @@ Data link layer에 대한 개념은 Network 카테고리의 첫 번째 포스팅
 
 1. ALOHA : 가장 오래된 다중접속 방식이다. 충돌방지를 위해 임의로 대기했다(backoff time)가 신호를 송신한다.
 ![aloha]({{site.url}}/img/aloha.jpg)
-2. CSMA/CD : 만약 같은 회선에 존재하는 서로 다른 컴퓨터가 동시에 신호를 보내게 되면 충돌이 일어날 수 있는데, CSMA/CD에서는 충돌을 미리 감지하고 jamming signal을 다른 기기에 보내어서 전송을 일정 시간 중단시킴으로써 회선이 낭비되지 않도록 한다. 
+2. CSMA/CD : Carrier Sense (회선이 사용중인지 확인) Multiple Access (다중 접근) / Collision Detection으로서, 만약 같은 회선에 존재하는 서로 다른 컴퓨터가 동시에 신호를 보내게 되면 충돌이 일어날 수 있는데, CSMA/CD에서는 충돌을 미리 감지하고 jamming signal을 다른 기기에 보내어서 전송을 일정 시간 중단시킴으로써 회선이 낭비되지 않도록 한다. 
 ![csma_cd]({{site.url}}/img/csma_cd.jpg)
 3. CSMA/CA : 무선 네트워크에서는 CSMA/CD방식을 적용하기가 어렵다. 그래서 이 방식이 고안되었는데, 충돌을 감지하는 것이 아니라, 미리 충돌을 피하는 방식이다. 방식은 이러하다.
 > 회선에 아무런 신호가 잡히지 않는 idle한 상태에서, 한 기기가 통신을 하기 전에 IFS(Interframe Space)만큼 기다리면서 혹시 원거리의 다른 기기의 회선 사용을 예방한다. 그 뒤에도 idle한 상태라면, contention window에서 임의의 slot time을 배정받고 다시 한번 기다린다. 그 후, 최종적으로 idle한 상태를 확인하면 마침내 신호를 전송한 뒤에 수신측으로부터 ACK메시지를 기다린다. ACK메시지가 잘 도착하면 성공적으로 송수신이 이루어진 것이다.
