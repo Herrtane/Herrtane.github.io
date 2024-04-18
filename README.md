@@ -21,12 +21,12 @@ permalink: /about/
 ### Profile (Korean)
 - 대한민국
 - 학부 : 경희대학교 컴퓨터공학과
-- 석사 : 고려대학교 정보보호대학원 (진행중)
+- 석사 : 고려대학교 정보보호대학원 정보보호학과 (진행중)
 
 ### Profile (English)
 - South Korea
 - B.S : Kyunghee University - Computer Science and Engineering
-- Master : (Ongoing) Korea University - School of Cyber Security
+- Master : (Ongoing) Korea University - School of Cybersecurity
 
 ### Contact
 - Email : {{site.email}}
