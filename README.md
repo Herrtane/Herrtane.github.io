@@ -18,10 +18,15 @@ permalink: /about/
 
 제가 진행했던 프로젝트들을 보시려면, MyProjects 카테고리를 클릭해주세요.<br/>
 
-### Profile
+### Profile (Korean)
+- 대한민국
+- 학부 : 경희대학교 컴퓨터공학과
+- 석사 : 고려대학교 정보보호대학원 (진행중)
+
+### Profile (English)
 - South Korea
-- B.S : Kyunghee Univ. Computer Science and Engineering
-- Master : (Ongoing) Korea Univ. School of Cyber Security
+- B.S : Kyunghee University - Computer Science and Engineering
+- Master : (Ongoing) Korea University - School of Cyber Security
 
 ### Contact
 - Email : {{site.email}}
