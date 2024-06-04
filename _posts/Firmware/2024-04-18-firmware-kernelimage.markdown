@@ -60,6 +60,69 @@ Lastly, choosing the right kernel image format depends on a variety of factors, 
 
 uImage : zImage에 다른 가공을 한 바이너리이다. u-boot source에 있는 mkimage라는 툴을 이용하여 u-boot용 커널이미지를 생성한 것이다. 얘는 zImage앞에 64byte의 헤더가 붙어서, 커널이 몇번지에 올라가야하는지, 커널이 무슨 종류인지, 등의 정보를 싣게 된다.(target architecture, operating system, image type, compression method, entry points, time stamp, CRC32 checksums 등)zImage와 달리 bootloader에서 uImage를 실행시키면 uImage가 알아서 자기위치에 압출풀고 실행된다는 것이다.
 
+## Kernel Image Magic Number
+
+아래는 binwalk 도구의 magic 디렉터리 내에 존재하는 kernel image magic number 정보들이다. 현재 연구실 과제를 진행하면서 binwalk를 굉장히 자세히 분석하고 있다보니, 자연스럽게 아래의 유용한 파일도 발견할 수 있었다!
+
+```
+# Linux kernel boot images, from Albert Cahalan <acahalan@cs.uml.edu>
+# and others such as Axel Kohlmeyer <akohlmey@rincewind.chemie.uni-ulm.de>
+# and Nicolas Lichtmaier <nick@debian.org>
+# All known start with: b8 c0 07 8e d8 b8 00 90 8e c0 b9 00 01 29 f6 29
+0       string      \xb8\xc0\x07\x8e\xd8\xb8\x00\x90\x8e\xc0\xb9\x00\x01\x29\xf6\x29    Linux kernel boot image
+>514    string      !HdrS                                                               {invalid}
+
+# Finds and prints Linux kernel strings in raw Linux kernels (output like uname -a).
+# Commonly found in decompressed embedded kernel binaries.
+0       string      Linux\x20version\x20    Linux kernel version
+>14     byte        >0x33                   {invalid}
+>14     byte        <0x32                   {invalid}
+>14     string      x                       %.6s
+
+# Linux ARM compressed kernel image
+# Starts with 8 NOPs, with 0x016F2818 at offset 0x24
+36  ulelong 0x016F2818                      Linux kernel ARM boot executable zImage (little-endian)
+>0  ulelong !0xE1A00000                     {invalid}(invalid)
+>4  ulelong !0xE1A00000                     {invalid}(invalid)
+>8  ulelong !0xE1A00000                     {invalid}(invalid)
+>12 ulelong !0xE1A00000                     {invalid}(invalid)
+>16 ulelong !0xE1A00000                     {invalid}(invalid)
+>20 ulelong !0xE1A00000                     {invalid}(invalid)
+>24 ulelong !0xE1A00000                     {invalid}(invalid)
+>28 ulelong !0xE1A00000                     {invalid}(invalid)
+
+36  ubelong 0x016F2818                      Linux kernel ARM boot executable zImage (big-endian)
+>0  ubelong !0xE1A00000                     {invalid}(invalid)
+>4  ubelong !0xE1A00000                     {invalid}(invalid)
+>8  ubelong !0xE1A00000                     {invalid}(invalid)
+>12 ubelong !0xE1A00000                     {invalid}(invalid)
+>16 ubelong !0xE1A00000                     {invalid}(invalid)
+>20 ubelong !0xE1A00000                     {invalid}(invalid)
+>24 ubelong !0xE1A00000                     {invalid}(invalid)
+>28 ubelong !0xE1A00000                     {invalid}(invalid)
+
+# Linux ARM64 kernel image
+# Header defined through https://www.kernel.org/doc/Documentation/arm64/booting.txt
+56  string    ARMd                          Linux kernel ARM64 image,
+# Reserved fields
+>32 ulequad   !0                            {invalid}
+>40 ulequad   !0                            {invalid}
+>48 ulequad   !0                            {invalid}
+# Information
+>8  ulelong   x                             load offset: 0x%x,
+>16 ulelong   x                             image size: %d bytes,
+# Flags
+>24 ulequad&1 0                             little endian,
+>24 ulequad&1 1                             big endian,
+>24 ulequad&6 2                             4k page size,
+>24 ulequad&6 4                             16k page size,
+>24 ulequad&6 6                             64k page size,
+>24 ulequad&8 0                             place kernel close to DRAM base
+```
+
 ## Reference
 
+아래 링크는 블로그를 작성하면서 상당히 도움이 되거나, 많은 참고가 되었던 링크이다. 특히, 한국어 블로그는 정말 상세하게 커널 이미지 분석이 설명되어있어서 추후 계속 참고하기 좋을 듯 하다.
+
+[kernel-images-korean](http://jake.dothome.co.kr/image1/)
 [kernel-images](https://www.baeldung.com/linux/kernel-images)
