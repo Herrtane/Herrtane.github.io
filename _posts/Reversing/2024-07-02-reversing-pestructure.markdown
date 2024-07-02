@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <Reversing> 1. PE 파일 구조
+title: <Reversing> 2. PE 파일 구조
 date: 2024-07-02 12:30:23 +0900
 category: Reversing
 comments: true
