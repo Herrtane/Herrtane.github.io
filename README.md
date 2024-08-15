@@ -58,7 +58,8 @@ permalink: /about/
 
 ### Conferences and Publications
 
-- 2024.6.20-21 : 정보보호학술대회 발표세션 - MAVLink를 이용한 커스텀 드론 데이터 추출 기법 연구
+- 2024.6.20-21 : 정보보호학술대회 발표세션
+    - MAVLink를 이용한 커스텀 드론 데이터 추출 기법 연구
 
 ### Awards and Scholarships
 
