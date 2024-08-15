@@ -20,6 +20,12 @@ permalink: /about/
 
 제가 진행했던 프로젝트들을 보시려면, MyProjects 카테고리를 클릭해주세요.<br/>
 
+### Profile
+
+- 대한민국 (South Korean)
+- 학부 (B.S) : 경희대학교 컴퓨터공학과 (Kyunghee University - Computer Science and Engineering)
+- 석사 (Master) : 고려대학교 정보보호대학원 정보보호학과 디지털포렌식연구실 (재학중) (Korea University - School of Cybersecurity, Digital Forensic Research Center)
+
 ### Research Interest
 
 - Digital Forensics
@@ -28,22 +34,40 @@ permalink: /about/
 - Kernel System
 - File System
 
-### Programming Language
+### Programming Language and Skills
 
 - C/C++
 - Python
+- Reverse Engineering
+    - Dynamic : xDBG, GDB
+    - Static : IDA, Ghidra
+- Digital Forensics
+    - SW : Autopsy, Magnet AXIOM, FTK Imager
+    - HW : Falcon
+- File Systems
+    - FAT/exFAT, UBIFS
 
-### Profile (Korean)
+### Research Experience
 
-- 대한민국
-- 학부 : 경희대학교 컴퓨터공학과
-- 석사 : 고려대학교 정보보호대학원 정보보호학과 (재학중)
+- 경희대학교 임베디드시스템연구실 (MESL) 학부연구생 (2023.1-2023.11)
+    - PX4 드론 관련 보안과제 주 연구원
+- 고려대학교 디지털포렌식연구실 (DFRC) 석사 (2024.1-Ongoing)
+    - 드론포렌식 과제 주 연구원 (PX4, Ardupilot, DJI)
+    - 펌웨어 관련 보안과제 주 연구원 (복호화, Reverse Engineering, File system)
+    - 기술유출 과제 주 연구원
 
-### Profile (English)
+### Conferences and Publications
 
-- South Korea
-- B.S : Kyunghee University - Computer Science and Engineering
-- Master : (Ongoing) Korea University - School of Cybersecurity
+- 2024.6.20-21 : 정보보호학술대회 발표세션 - MAVLink를 이용한 커스텀 드론 데이터 추출 기법 연구
+
+### Awards and Scholarships
+
+- 경희대학교 (Kyunghee University)
+    - 2018년도 2학기 : 밝은사회우수장학
+    - 2022년도 2학기 : 성적우수장학
+    - 2023년도 1학기 : 성적우수장학
+- 고려대학교
+    - 2024년도 1학기 : BK우수장학생
 
 ### Contact
 
