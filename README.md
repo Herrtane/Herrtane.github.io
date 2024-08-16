@@ -36,16 +36,19 @@ permalink: /about/
 
 ### Programming Language and Skills
 
-- C/C++
-- Python
+- Programming Languages
+    - C/C++
+    - Python
+- Linux
 - Reverse Engineering
     - Dynamic : xDBG, GDB
-    - Static : IDA, Ghidra
+    - Static : IDA, Ghidra, HxD
 - Digital Forensics
     - SW : Autopsy, Magnet AXIOM, FTK Imager
     - HW : Falcon
-- File Systems
-    - FAT/exFAT, UBIFS
+- File Systems and Structures
+    - FAT/exFAT, APFS, UBIFS
+    - PE, ELF
 
 ### Research Experience
 
