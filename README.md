@@ -58,6 +58,8 @@ permalink: /about/
     - 드론포렌식 과제 주 연구원 (PX4, Ardupilot, DJI)
     - 펌웨어 관련 보안과제 주 연구원 (복호화, Reverse Engineering, File system)
     - 기술유출 과제 주 연구원
+    - 포렌식 사건 조사 참여
+        - 모 회사 기술유출 의심 노트북 포렌식
 
 ### Conferences and Publications
 
