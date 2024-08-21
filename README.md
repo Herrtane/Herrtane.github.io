@@ -80,6 +80,6 @@ permalink: /about/
 
 ### Contact
 
-- Email : {{site.email}}
+- Email : herrtane@korea.ac.kr
 - Blog(Naver) : blog.naver.com/cjfgksvv
 - Blog(Github) : herrtane.github.io
