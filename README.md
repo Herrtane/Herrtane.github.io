@@ -69,6 +69,14 @@ permalink: /about/
 - 2024.6.20-21 : 정보보호학술대회 발표세션
     - MAVLink를 이용한 커스텀 드론 데이터 추출 기법 연구
 
+### Extra curricular activities
+
+- 2024.8.24-25 : Dreamhack CTF Season 6 Round #5 (Rev)
+    - Dreamhack 주관
+    - 211명 중 31위
+- 2024.9.7-8 : Hack the DRONE 2024 예선 참가
+    - (주)테르텐, 경희대학교 융합보안대학원/SW중심대학 주관
+
 ### Awards and Scholarships
 
 - 경희대학교 (Kyunghee University)
