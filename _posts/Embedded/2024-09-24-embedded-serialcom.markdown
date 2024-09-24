@@ -44,7 +44,17 @@ Transmitter가 이진 펄스 형태로 데이터를 보내면 Receiver가 높고
 
 ### Bit Rate (BPS) vs Baud Rate
 
+그렇다면 데이터 통신이 이루어질 때, 그 전송 속도를 나타내는 지표는 무엇이고, 그 단위는 무엇일까? 아래에 그 설명이 있다.
 
+- Bit Rate
+    - 초당 얼마나 많은 데이터 비트를 전송할 수 있는지를 나타낸 것
+    - 비트 전송 속도를 의미
+    - 1000 bps = 3000bit/second
+- Baud Rate
+    - 초당 얼마나 많은 심볼을 전송할 수 있는지를 나타낸 것
+    - 심볼 전송 속도를 의미
+    - 1000 baud rate = 1초에 1000개의 심볼을 보낸다는 말
+    - 심볼 (Symbol) : 물리적인 단위, 하나 이상의 비트를 포함
 
 ### PIN
 
@@ -60,3 +70,4 @@ Transmitter가 이진 펄스 형태로 데이터를 보내면 Receiver가 높고
 - RX (Receiver)
 
 ![usb_to_ttl]({{site.url}}/img/usb_to_ttl_cable.jpg)
+<img src={{site.url}}/img/usb_to_ttl_cable.jpg width="100" height="100"/>
