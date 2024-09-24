@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <Embedded> 4. Embedded Serial Communication, Flash Memory Dump
+title: <Embedded> 5. Embedded Serial Communication, Flash Memory Dump
 date: 2024-09-24 12:31:23 +0900
 category: Embedded/Kernel
 comments: true
