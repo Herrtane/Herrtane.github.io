@@ -69,5 +69,4 @@ Transmitter가 이진 펄스 형태로 데이터를 보내면 Receiver가 높고
 - TX (Transmitter)
 - RX (Receiver)
 
-![usb_to_ttl]({{site.url}}/img/usb_to_ttl_cable.jpg)
-<img src={{site.url}}/img/usb_to_ttl_cable.jpg width="100" height="100"/>
+![usb_to_ttl]({{site.url}}/img/usb_to_ttl_cable.jpg){: width="50" height="50"}
