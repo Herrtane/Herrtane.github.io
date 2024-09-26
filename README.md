@@ -39,6 +39,7 @@ permalink: /about/
 - Programming Languages
     - C/C++
     - Python
+    - Shell script
 - Linux
 - Reverse Engineering
     - Dynamic : xDBG, GDB
