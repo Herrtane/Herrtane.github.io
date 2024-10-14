@@ -2,7 +2,7 @@
 layout: post
 title: <Firmware> 1. CFE (Common Firmware Environment)
 date: 2024-04-18 14:30:23 +0900
-category: Firmware
+category: Embedded/Kernel
 comments: true
 ---
 

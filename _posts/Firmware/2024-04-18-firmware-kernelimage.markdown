@@ -2,7 +2,7 @@
 layout: post
 title: <Firmware> 2. Kernel image
 date: 2024-04-29 14:30:23 +0900
-category: Firmware
+category: Embedded/Kernel
 comments: true
 ---
 

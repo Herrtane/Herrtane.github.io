@@ -2,7 +2,7 @@
 layout: post
 title: <Firmware> 5. Shell script 관련 정리 (2)
 date: 2024-10-02 2:30:23 +0900
-category: Firmware
+category: Embedded/Kernel
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: <Firmware> 3. Kernel image Extraction with binwalk, dd, hexdump
 date: 2024-06-04 14:30:23 +0900
-category: Firmware
+category: Embedded/Kernel
 comments: true
 ---
 

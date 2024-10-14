@@ -2,7 +2,7 @@
 layout: post
 title: <Firmware> 4. 자주 사용하는 Linux 기능 및 Shell script 관련 정리
 date: 2024-09-10 14:30:23 +0900
-category: Firmware
+category: Embedded/Kernel
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: <Firmware> 0. Background Knowledge
 date: 2024-04-18 12:30:23 +0900
-category: Firmware
+category: Embedded/Kernel
 comments: true
 ---
 
