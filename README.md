@@ -44,6 +44,9 @@ permalink: /about/
 - Reverse Engineering
     - Dynamic : xDBG, GDB
     - Static : IDA, Ghidra, HxD
+- Embedded/Hardware
+    - UART serial com.
+    - Drone : PX4, Ardupilot, DJI
 - Digital Forensics
     - SW : Autopsy, Magnet AXIOM, FTK Imager
     - HW : Falcon
