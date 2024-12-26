@@ -14,11 +14,11 @@ comments: true
 
 우선, 이 라우터를 직접 분해, 즉 Teardown 했다. 내부에 UART 포트가 명시적으로 적혀있지는 않았지만, 누가봐도 UART 포트처럼 보이는 4개의 구멍이 보였다.
 
-![uart1]({{site.url}}/img/uart1.jpg){: width="100%" height="100%"}
+![uart1]({{site.url}}/img/uart1.jpg){: width="50%" height="50%"}
 
 하지만... **어디가 TX, RX, GND, VCC인지 전혀 모르는 상태**이므로, 이를 찾기위해 연구실의 하드웨어 전문 박사님께 여쭤본 결과, Multimeter 도구를 사용해서 직접 전류와 전압을 찍어보면서 경우의 수를 찍어가기로 했다..!
 
-![uart2]({{site.url}}/img/uart2.jpg){: width="100%" height="100%"}
+![uart2]({{site.url}}/img/uart2.jpg){: width="50%" height="50%"}
 
 살면서 정말 처음 다뤄보는 Multimeter 기계인데, 이 실험을 진행하면서 어쩌다보니 물리 공부까지 하게 되었다.. 전류와 전압, VCC와 GND의 극 관계, 쇼트 등등.. 어쨌든 그 찾아가는 과정을 적어보자면...
 
@@ -26,7 +26,7 @@ comments: true
 2. 그 다음 VCC를 찾아야 한다. GND를 찾았다는 가정 하에, VCC와 GND의 전압 차는 내 라우터 기준 3.3V이므로, Multimeter에도 3.3V 차이로 출력되어야 한다. 실제로 3.1~3.2V정도로 출력되는 지점을 발견하였다.
 3. TX와 RX도 찾아야 하는데, TX 먼저 발견하는 것이 쉽다. TX에는 주기적으로 신호가 뿜어져나오므로, 3.3V까지는 아니지만 어느 정도 볼트가 측정되어야 한다. 실제로 남은 2개의 포트 중 한 개의 포트에서 1.6V정도의 전압이 검출되었다. 그렇다면 나머지는 RX가 되겠다!
 
-![uart3]({{site.url}}/img/uart3.jpg){: width="100%" height="100%"}
+![uart3]({{site.url}}/img/uart3.jpg){: width="50%" height="50%"}
 
 최종적으로 UART 식별이 끝났다면, 이제 선을 연결해서 PC에서 XShell, Putty, Picocom 등을 이용해서 쉘이 열리는지 확인하면 된다. **(사실 이 과정이 제일 힘들었다)** 납땜을 하는 과정에서 TX와 RX 사이가 납으로 연결되어서 갑자기 쇼트가 나기도 하고.. Baudrate를 찾기 위해 이것 저것 돌려가며 찾아야 하는 등.. 좌절하려고 하던 찰나에 딱! 기적적으로 PC의 XShell에서 정상적으로 부팅 로그가 보였다.
 
