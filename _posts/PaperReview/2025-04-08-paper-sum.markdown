@@ -1,0 +1,101 @@
+---
+layout: post
+title: <Paper Review> SuM - Efficient shadow stack protection on ARM Cortex-M
+date: 2025-04-08 15:30:23 +0900
+category: PaperReview
+comments: true
+---
+
+## Before we start...
+
+최근들어 블로그 포스팅이 뜸해졌었는데, 우선 연구실 일정이 매우 정신이 없었다. 그리고 요새는 개인 Notion에 연구나 공부 내용들을 정리하다보니, 블로그에 포스팅을 따로 못하고 있었다. 하지만 개인 Notion과는 별개로 블로그 포스팅 역시 나에게는 중요하므로, 그동안 노션에 정리했던 내용들을 잘 취합하고 정제해서 포스팅을 진행하려고 한다.
+
+<br/>
+
+이번 포스팅은 논문 리뷰이다. 사실 연구실에 다니면서 수 많은 논문들을 읽고 발표했지만, 현재 내 관심사와 직접적으로 연관된 논문 위주로 블로그에 포스팅할 예정이다. 논문 전체 내용을 요약하는 건 따로 자료로도 만들었고, 굳이 여기에까지 정리하는건 의미가 없다 싶어서, **내가 알게되거나 새롭게 알게된 점** 등을 위주로 정리하려고 한다.
+
+## Key points to keep in mind
+
+### Control Flow Edges
+
+- Forward-Edge : Indirect function calls (ex. call, jmp)
+- Backward-Edge : Function returns (ex. ret, bx lr)
+- → The attacker can attack backward-edge control flow by using ROP
+    - Chaining multiple "gadgets" together allows the attacker to execute arbitrary code without injecting new code (bypassing W⊕X protections).
+
+### Shadow Stack
+
+A shadow stack is similar to stack canaries in that both mechanisms aim to maintain the control-flow integrity of the protected program by detecting attacks that tamper the stored return address by an attacker during an exploitation attempt.
+
+<br/>
+
+Shadow stacks can be implemented by recompiling programs with modified prologues and epilogues, by dynamic binary rewriting techniques to achieve the same effect, or with hardware support.
+
+<br/>
+
+Like stack canaries, shadow stacks do not protect stack data other than return addresses, and so offer incomplete protection against security vulnerabilities that result from memory safety errors.
+
+[https://devblogs.microsoft.com/oldnewthing/20241015-00/?p=110374](https://devblogs.microsoft.com/oldnewthing/20241015-00/?p=110374)
+
+### Return Address Spill
+
+논문에서는 SuM이 Shadow Stack을 적용해야 하는 경우를 Return Address가 Stack에 Spill(저장)될 때라고 말하고 있음. 
+
+1. **Non-leaf Function의 경우**
+    - 자신이 또 다른 함수를 호출하는 함수
+    - ARM 아키텍처에서는 함수를 호출하면 lr(r14)에 return address가 저장됨
+    - 현재 함수가 또 다른 함수를 호출하려면, lr을 stack에 spill(저장)해야함
+2. **High Register Pressure으로 인해 lr이 stack으로 옮겨진 경우**
+    - ARM 아키텍처에서 레지스터 개수는 제한적
+    - 함수 내부에서 **여러 개의 임시 변수를 사용할 경우** 레지스터가 부족할 수 있음 → 이 경우, 컴파일러가 일부 레지스터를 stack에 spill(저장)
+
+### W XOR X Policy
+
+Write 가능 영역 → Execute 불가능
+Execute 가능 영역 → Write 불가능
+즉, 코드를 실행할 수 있는 메모리는 변경할 수 없고, 데이터를 저장할 수 있는 메모리는 실행할 수 없다!
+ex. 스택에 쉘코드를 저장한 후, 스택을 실행하도록 조작하면 시스템이 공격자에게 장악당할 수 있음 → Linux에서 NX설정
+
+### ARM assembly
+
+- .word 0xCAFEBABE : 4bytes 값을 메모리에 저장하며, 상수, 라벨, 함수 포인터 등에 쓰임
+- .global my_function : my_function을 다른 파일들에도 보이게끔 함
+- .type my_function, %function : 어셈블러에게 my_function은 변수나 라벨이 아니고 함수라고 알려줌
+- ldr r0, =my_variable : my_variable의 주소를 r0로 로드함
+- STR vs STRT
+    - STR : 메모리 권한이 허용되는 한 큰 제약없이 메모리에 값을 저장 가능
+    - STRT(STR with Translation) : Unprivileged memory access로, 메모리에 값을 저장할 때 특정 규칙에 의해 제약이 걸림
+- PUSH, POP
+    - register의 order은 관계가 없다. **무조건 registesr의 number가 작은 것이 lowest memory address에 저장된다 (나중에 push됨)**.
+    
+    ![image.png]({{site.url}}/img/arm_push_pop.png){: width="30%" height="30%"}
+    
+- BL(Branch with Link), BX(Branch and exchange)
+    - Use `B` when jumping to a known label (fixed address).
+    - `BL` is for **function calls** (saves return address in `lr`).
+    - `BX` is for **jumps** (does not save return address, using register)
+    - `BX lr` is commonly used to **return from a function**.
+
+### Basic ARM Cortex-M Exception Priorities
+
+NMI (Non-maskable Interrupt) → Highest Priority
+
+HardFault
+
+Memory Management Fault
+
+BusFault
+
+UsageFault
+
+DebugMonitor → Lowest Priority, but SuM sets this as the highest priority
+
+Debug Monitor는 다음과 같은 상황에서 활성화된다.
+
+1. A watchpoint(DWT) is hit : 특정 메모리 영역에 접근 발생
+2. A hardware breakpoint is hit : 사전에 정의된 명령어가 실행
+3. A debug event occurs : 디버거 활동이나 비인가된 레지스터 접근
+
+## 마치며
+
+예전부터 Shadow stack에 대해서 궁금했었는데, 이번 기회에 연구실 세미나 준비와 병행하면서 많은 지식들과 인사이트들을 얻을 수 있었다.
