@@ -58,6 +58,7 @@ permalink: /about/
 - 고려대학교 (Korea University)
     - 2024년도 1학기 : BK우수장학생
     - 2024년도 2학기 : BK우수장학생
+    - 2025년도 1학기 : BK우수장학생
 - 경희대학교 (Kyunghee University)
     - 2018년도 2학기 : 밝은사회우수장학
     - 2022년도 2학기 : 성적우수장학
@@ -65,11 +66,11 @@ permalink: /about/
 
 ### Research Interest
 
-- Digital Forensics
+- Embedded System Security
 - Reverse Engineering
+- Linux Kernel System
+- Digital Forensics
 - Malware Analysis
-- Kernel System
-- File System
 
 ### Programming Language and Skills
 
@@ -79,16 +80,18 @@ permalink: /about/
     - Shell script
 - Linux
 - Reverse Engineering
-    - Dynamic : xDBG, GDB
-    - Static : IDA, Ghidra, HxD
+    - Architecture : x86-64, ARM, MIPS
+    - Dynamic : xDBG, GDB, QEMU
+    - Static : Ghidra, IDA Pro, HxD
 - Embedded/Hardware
-    - UART serial com.
-    - Drone : PX4, Ardupilot, DJI
+    - Data Acquisition : UART serial com., Chip-Off
+    - Drone Analysis : PX4, Ardupilot, DJI
+    - IoT Analysis : Router, IPCamera
 - Digital Forensics
     - SW : Autopsy, Magnet AXIOM, FTK Imager
     - HW : Falcon
 - File Systems and Structures
-    - FAT/exFAT, APFS, UBIFS
+    - FAT/exFAT, APFS, UBIFS, SquashFS
     - PE, ELF
 - Network
     - Fiddler, Wireshark
