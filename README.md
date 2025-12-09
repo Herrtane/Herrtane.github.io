@@ -59,7 +59,9 @@ permalink: /about/
 
 ### Awards and Scholarships
 
-- LG전자 LGEMembers
+- LG전자 (LG Electronics)
+    - 2025년도 2학기 : LGEMembers
+    - 2025년도 1학기 : LGEMembers
 - 고려대학교 (Korea University)
     - 2025년도 2학기 : BK우수장학생
     - 2025년도 1학기 : BK우수장학생
