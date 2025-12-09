@@ -22,8 +22,8 @@ permalink: /about/
 
 ### Profile
 
-- 대한민국 (South Korean)
-- 석사 (Master) : 고려대학교 정보보호대학원 정보보호학과 디지털포렌식연구실 (재학중) (Korea University - School of Cybersecurity, Digital Forensic Research Center)
+- LG Electronics Researcher (예정)
+- 석사 (M.S) : 고려대학교 정보보호대학원 정보보호학과 디지털포렌식연구실 (Korea University - School of Cybersecurity, Digital Forensic Research Center)
 - 학부 (B.S) : 경희대학교 컴퓨터공학과 (Kyunghee University - Computer Science and Engineering)
 
 ### Research Experience
@@ -32,6 +32,8 @@ permalink: /about/
     - 드론포렌식 과제 주 연구원 (PX4, Ardupilot, DJI)
     - 펌웨어 관련 보안과제 주 연구원 (복호화, Reverse Engineering, Flash File system)
     - 기술유출 과제 주 연구원
+    - 역공학 수업 조교 및 문제 출제
+        - 북한발 Malware 분석 및 복호화
     - 포렌식 사건 조사 참여
         - 모 회사 기술유출 의심 노트북 포렌식
 - 경희대학교 임베디드시스템연구실 (MESL) 학부연구생 (2023.1-2023.11)
@@ -40,6 +42,8 @@ permalink: /about/
 
 ### Conferences and Publications
 
+- 2025.11.10-12 : DFRWS 2025 APAC Best Poster (First Place)
+    - Design and Development of an Enhanced and Comprehensive Drone Forensic Tool
 - **2024.11.28-29 : 정보보호학회 동계학술대회 논문발표 학회우수논문상**
     - **임베디드 기기의 암호화된 펌웨어 이미지 복호화 기법 연구**
 - 2024.6.20-21 : 정보보호학회 하계학술대회 논문발표
@@ -55,14 +59,16 @@ permalink: /about/
 
 ### Awards and Scholarships
 
+- LG전자 LGEMembers
 - 고려대학교 (Korea University)
-    - 2024년도 1학기 : BK우수장학생
-    - 2024년도 2학기 : BK우수장학생
+    - 2025년도 2학기 : BK우수장학생
     - 2025년도 1학기 : BK우수장학생
+    - 2024년도 2학기 : BK우수장학생
+    - 2024년도 1학기 : BK우수장학생
 - 경희대학교 (Kyunghee University)
-    - 2018년도 2학기 : 밝은사회우수장학
-    - 2022년도 2학기 : 성적우수장학
     - 2023년도 1학기 : 성적우수장학
+    - 2022년도 2학기 : 성적우수장학
+    - 2018년도 2학기 : 밝은사회우수장학
 
 ### Research Interest
 
@@ -84,12 +90,12 @@ permalink: /about/
     - Dynamic : xDBG, GDB, QEMU
     - Static : Ghidra, IDA Pro, HxD
 - Embedded/Hardware
-    - Data Acquisition : UART serial com., Chip-Off
+    - Data Acquisition : UART, Chip-Off
     - Drone Analysis : PX4, Ardupilot, DJI
     - IoT Analysis : Router, IPCamera
 - Digital Forensics
     - SW : Autopsy, Magnet AXIOM, FTK Imager
-    - HW : Falcon
+    - HW : Falcon, XGecu Flash Programmer
 - File Systems and Structures
     - FAT/exFAT, APFS, UBIFS, SquashFS
     - PE, ELF
