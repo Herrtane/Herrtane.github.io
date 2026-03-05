@@ -22,13 +22,13 @@ permalink: /about/
 
 ### Profile
 
-- LG Electronics Researcher (예정)
+- LG전자 CTO 차세대컴퓨팅연구소 SW Security Governance Team 연구원 (LG Electronics CTO SW Security Governance Team Researcher)
 - 석사 (M.S) : 고려대학교 정보보호대학원 정보보호학과 디지털포렌식연구실 (Korea University - School of Cybersecurity, Digital Forensic Research Center)
 - 학부 (B.S) : 경희대학교 컴퓨터공학과 (Kyunghee University - Computer Science and Engineering)
 
 ### Research Experience
 
-- 고려대학교 디지털포렌식연구실 (DFRC) 석사 (2024.1-Ongoing)
+- 고려대학교 디지털포렌식연구실 (DFRC) 석사 (2024.1-2026.2)
     - 드론포렌식 과제 주 연구원 (PX4, Ardupilot, DJI)
     - 펌웨어 관련 보안과제 주 연구원 (복호화, Reverse Engineering, Flash File system)
     - 기술유출 과제 주 연구원
@@ -86,11 +86,15 @@ permalink: /about/
     - C/C++
     - Python
     - Shell script
-- Linux
+- Linux/Kernel
+    - System Programming
+    - OS/Kernel Knowledge
 - Reverse Engineering
     - Architecture : x86-64, ARM, MIPS
     - Dynamic : xDBG, GDB, QEMU
     - Static : Ghidra, IDA Pro, HxD
+- Fuzzing
+    - Kernel Driver Fuzzing
 - Embedded/Hardware
     - Data Acquisition : UART, Chip-Off
     - Drone Analysis : PX4, Ardupilot, DJI
@@ -106,6 +110,6 @@ permalink: /about/
 
 ### Contact
 
-- Email : herrtane@korea.ac.kr
+- Email : chulhan.lee@lge.com
 - Blog(Naver) : blog.naver.com/cjfgksvv
 - Blog(Github) : herrtane.github.io
