@@ -49,7 +49,9 @@ unsigned char c = (unsigned char)n;
 이유:
 
 unsigned char는 1바이트(8비트)
+
 따라서 하위 8비트만 남기고 상위 비트는 잘려나간다.
+
 즉, 0x4006aa → 0xaa
 
 (2) 하지만 코드에서 한 것은 값 형변환이 아니다
@@ -77,23 +79,23 @@ printf에서 형식 지정자는 이런 구조다:
 
 여기서
 
-h → short
-hh → char
-l → long
-ll → long long
+- h → short
+- hh → char
+- l → long
+- ll → long long
 
 즉,
 
-%x → unsigned int
-%hx → unsigned short
-%hhx → unsigned char
+- %x → unsigned int
+- %hx → unsigned short
+- %hhx → unsigned char
 
 그럼 왜 hh가 char(1바이트) 인가?
 
 C 표준에서 이렇게 정의되어 있다.
 
-h → short
-hh → signed char / unsigned char
+- h → short
+- hh → signed char / unsigned char
 
 즉 hh는 "half of half"라는 의미로,
 
