@@ -81,16 +81,20 @@ h → short
 hh → char
 l → long
 ll → long long
+
 즉,
 
 %x → unsigned int
 %hx → unsigned short
 %hhx → unsigned char
-그럼 왜 hh가 char(1바이트)냐?
-C 표준에서 이렇게 정의되어 있다:
+
+그럼 왜 hh가 char(1바이트) 인가?
+
+C 표준에서 이렇게 정의되어 있다.
 
 h → short
 hh → signed char / unsigned char
+
 즉 hh는 "half of half"라는 의미로,
 
 int (보통 4바이트) → short (2바이트) → char (1바이트)
