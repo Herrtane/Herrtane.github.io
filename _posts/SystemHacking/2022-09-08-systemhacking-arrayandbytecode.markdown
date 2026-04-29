@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 09. 배열 인덱스 범위, 바이트코드 및 인코딩
+title: <System Hacking> 09. 배열 Index 범위, Bytecode 및 Encoding (2026.04.29 수정)
 date: 2022-09-08 22:30:23 +0900
 category: System_Hacking
 comments: true
@@ -71,7 +71,33 @@ Dreamhack 실습문제나 wargame을 풀다보면, payload를 작성할 때, 언
 
 <br/>
 
-또한, **Unicode**는 영어 뿐만 아니라, 국제적으로 전세계 언어를 모두 표시할 수 있는 표준코드이다. 글자와 코드가 1:1 매핑되어있는 '코드표'라고 이해하면 된다. utf-8은 역시 이 유니코드를 encoding하는 '방식'이다. 
+또한, **Unicode**는 영어 뿐만 아니라, 국제적으로 전세계 언어를 모두 표시할 수 있는 표준코드이다. 글자와 코드가 1:1 매핑되어있는 '코드표'라고 이해하면 된다. utf-8은 역시 이 유니코드를 encoding하는 '방식'이다.
+
+한글을 예로 들면...
+
+'가' : 유니코드 문자 U+AC00
+
+그럼 이걸 bytes로 바꾸면?
+
+```python
+'가'.encode('utf-8')
+>>> b'\xea\xb0\x80'
+```
+
+그래서 str 과 bytes 차이가 생기는 것이다.
+
+왜 해킹/바이너리에서 중요하냐면, 익스플로잇은 "문자"를 다루는 게 아니라 "바이트"를 다룬다. 그래서 항상 **str → encode → bytes → 전송** 과정을 거쳐야 한다.
+
+```c
+printf("input: ");
+```
+
+이건 화면에 문자열처럼 보이지만, 실제로는
+
+0x69 0x6e 0x70 0x75 0x74 0x3a 0x20 로 바이트들이 stdout으로 출력되는 것이다.
+
+운영체제 레벨에서 프로세스 간 통신은 전부 bytes 단위이다.
+
 
 ## 마치며
 
