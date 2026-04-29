@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 05. Big endian 과 Little endian의 장단점 
+title: <System Hacking> 05. Big endian 과 Little endian의 장단점 (2026.04.29 수정)
 date: 2022-08-23 20:20:23 +0900
 category: System_Hacking
 comments: true
