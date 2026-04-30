@@ -1,12 +1,12 @@
 ---
 layout: post
-title: <System Hacking> 13. Return Oriented Programming (ROP), GOT overwrite
+title: <System Hacking> 13. Return to Library (RTL), Return Oriented Programming (ROP), GOT overwrite (2026.04.30 수정)
 date: 2022-09-21 19:30:23 +0900
 category: System_Hacking
 comments: true
 ---
 
-## ROP 실습문제
+## 실습문제
 
 이번 포스팅은 Dreamhack의 basic_rop_x64문제를 직접 복습하면서 설명하도록 하겠다.
 
@@ -50,21 +50,81 @@ int main(int argc, char *argv[]) {
 2. checksec 명령어로 주어진 바이너리 파일 (basic_rop_x64)을 분석해보면, NX enabled가 되어있는 대신에, 특이하게도 Stack canary가 Disabled 되어있다. 사실, 카나리 우회는 하도 많이 해서, 크게 어렵지는 않은 부분이라 있어도 없어도 그만이다.
 3. write()함수에서 BOF 관련 취약점을 발견할 수 없기 때문에, 이 함수를 이용하기는 어려워보인다.
 
-### 익스플로잇 플랜
+### Return To Library
 
-일단 NX가 적용된 문제이기 때문에, buf에 shellcode를 주입하는 등의 기존의 공격방법은 통하지 않는다. NX가 적용된 경우, 실행 권한이 있는 메모리 영역은 코드 영역 부분이다. 특히, 라이브러리 관련 코드 영역을 적극적으로 이용하여 NX를 우회하여 해킹을 하는 방법을 자주 사용하게 된다. 이를 **Return to Library** 기법이라고 한다. 특히, **리눅스에서 C언어로 작성된 프로그램이 참조하는 libc**에는 다양한 함수들이 기본적으로 구현되어있는데, 이 곳을 적극적으로 공략할 것이다.
+일단 NX가 적용된 문제이기 때문에, buf에 shellcode를 주입하는 등의 기존의 공격방법은 통하지 않는다. **NX가 적용된 경우, 실행 권한이 있는 메모리 영역은 코드 영역 부분**이다. 특히, 라이브러리 관련 코드 영역을 적극적으로 이용하여 NX를 우회하여 해킹을 하는 방법을 자주 사용하게 된다. 이를 **Return to Library** 기법이라고 한다. 특히, **리눅스에서 C언어로 작성된 프로그램이 참조하는 libc**에는 다양한 함수들이 기본적으로 구현되어있는데, 이 곳을 적극적으로 공략할 것이다.
 
 <br/>
 
-하지만, 문제의 코드에서 알 수 있듯이, 당장 libc로 접근하는 방법은 가시적으로 보이지 않는다. 그래서, **Return gadget**이란 코드 조각을 이용해야 되는데, 가젯은 코드 영역에 위치하는, 컴파일 시에 결정되고 고정적인 어셈블리 코드조각을 이야기한다. 그 중에서, ret 어셈블리 명령어로 끝나는 가젯들을 특별히 return gadget이라 부른다.
+하지만, 문제의 코드에서 알 수 있듯이, 당장 libc로 접근하는 방법은 가시적으로 보이지 않는다. 그래서, **Gadget**이란 코드 조각을 이용하게 된다. 
+
+### Gadget
+
+**Gadget**은 바이너리 내 코드 영역 어딘가에 위치하는, 컴파일 시에 결정되는 고정적인 어셈블리 코드조각을 이야기한다. 주로 다음과 같은 위치에 존재하게 된다. 
+
+1. 실행 파일의 .text 영역
+2. libc
+3. 기타 공유 라이브러리
+
+즉, **컴파일된 바이너리 내에는 수천 개의 "우연한 가젯"이 존재**한다. 그 중에서, ret 어셈블리 명령어로 끝나는 가젯들을 특별히 **return gadget**이라 부른다. (일부 정보에서는 ret 단일 조각을 return gadget이라고 부르기도 한다. 엄청 중요한 건 아니니 용어는 return gadget으로 통일하겠다.)
 
 ```
 pop rdi; ret
 ```
 
-위의 일련의 어셈블리 명령어가 return gadget의 예이다. BOF를 발생시켜서 SFP 다음에 위치하는 return address에 스택 내의 악의적인 실행 코드를 대입해도, NX로 인해 실행 권한이 없기 때문에, 이 방법을 대신하여 return address에 return gadget을 대입시킨다. 그 후, 적절한 코드 영역의 함수 주소를 return gadget의 ret 부분에서 호출하는 우회 방식을 사용하게 된다.
+위의 일련의 어셈블리 명령어가 return gadget의 예이다. BOF를 발생시켜서 SFP 다음에 위치하는 return address에 스택 내의 악의적인 실행 코드를 대입해도, **NX로 인해 스택 내 코드는 실행 권한이 없기 때문에**, 이 방법을 대신하여 **return address에 return gadget이 존재하는 주소(주의: return gadget 자체를 넣는 것이 아니다. 헷갈리니 주의하자.)를 대입**시킨다. **그 후, 적절한 코드 영역의 함수 주소를 return gadget의 ret 부분에서 호출**하는 우회 방식을 사용하게 된다. 간단한 예시를 살펴보자.
+
+```
+[padding]
+[pop rdi; ret의 주소]   ← gadget 1
+["/bin/sh"]      ← pop돼서 rdi에 들어감
+[system]         ← ret에 의해 여기로 점프
+```
+
+이 경우, 실행 흐름은 다음과 같다.
+
+1. RIP → pop rdi
+2. rdi = "/bin/sh"
+3. ret
+4. RIP → system
+5. system("/bin/sh") 실행
 
 <br/>
+
+참고로, 아래처럼 ret 하나짜리 return gadget도 중요하다. 이건 주로 **x64에서 스택 정렬**시에 사용되는데, libc 함수를 호출하기 전에 ret 하나를 끼워넣어서 스택을 정렬해야 정상적으로 프로그램이 동작할 때가 종종 있다.
+
+```
+payload:
+[padding]
+[ret]          ← return gadget
+[pop rdi; ret의 주소] ← gadget
+["/bin/sh"]
+[system]
+```
+
+그렇다면 이런 가젯들은 직접 찾아야할까? 아니다. 기존에 뛰어난 선배 개발자 및 해커분들이 개발해놓은 좋은 도구들을 잘 활용하면 된다. 대표적으로는 **ROPgadget, pwntools** 등의 도구들에서 잘 구현되어있다.
+
+```
+pip install ROPgadget
+ROPgadget --binary ./vuln | grep "pop rdi"
+```
+
+이를 pwntools에서 같이 사용하는 방법은 다음과 같다.
+
+```python
+from pwn import *
+
+elf = ELF("./vuln")
+rop = ROP(elf)
+
+pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
+```
+
+### RTL과 ROP
+
+Return To Library (ret2libc)는 libc 함수 하나를 호출하여 NX를 우회하는 가장 기본적인 기법이라면, Return Oriented Programming (ROP)는 이를 확장하여, 여러 가젯 체인을 구성하는 방법이다. 즉, RTL을 일반화한 형태가 바로 ROP라고 보아도 무방하다.
+
+### 익스플로잇 플랜
 
 현재 분석하고 있는 바이너리에서는 read, write 함수가 사용되었기 때문에, 이 바이너리의 got table에는 두 함수가 등록되어있을 것이다. 이 **got table에 적힌 실제 함수의 주소는 곧 libc의 주소와 밀접하게 배치되어있다**는 특징을 이용하여, libc의 주소에 접근할 것이다. 그리고, 곧 **libc 내에 있는 쉘 획득 함수인 system 함수의 주소를 알아낼 수 있는데, 같은 libc 안에서 두 데이터 사이의 offset은 항상 같기 때문이다.** 즉, libc 내에서 system 함수와 read 함수 사이의 offset은 항상 동일하고, system 함수와 libc base 주소 사이의 offset도 항상 동일하다.
 
