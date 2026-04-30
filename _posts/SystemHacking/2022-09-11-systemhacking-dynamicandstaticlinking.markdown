@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 12. Dynamic and Static Link / PLT, GOT
+title: <System Hacking> 12. Dynamic and Static Link / PLT, GOT (2026.04.30 수정)
 date: 2022-09-11 21:30:23 +0900
 category: System_Hacking
 comments: true
@@ -23,9 +23,51 @@ comments: true
 
 <br/>
 
-동적 링크된 바이너리를 실행하면 동적 라이브러리가 프로세스의 메모리에 매핑된다. 그리고 실행 중에 라이브러리의 함수를 호출하면, 매핑된 라이브러리에서 호출할 함수의 주소를 찾아서 실행한다. 이 과정에서 **PLT(Procedure Linkage Table)와 GOT(Global Offset Table)**이 사용된다.
+동적 링크된 바이너리를 실행하면 동적 라이브러리가 프로세스의 메모리에 매핑된다. 그리고 실행 중에 라이브러리의 함수를 호출하면, 매핑된 라이브러리에서 호출할 함수의 주소를 찾아서 실행한다. 이 과정에서 **PLT(Procedure Linkage Table)와 GOT(Global Offset Table)**이 사용된다. 다음의 코드 예시를 보자.
 
-<br/>
+```c
+#include <stdio.h>
+
+int main() {
+  printf("Hello world!\n");
+  return 0;
+}
+```
+
+이 코드를 다음과 같이 동적, 정적 링크를 하여 GDB로 비교를 해보면, puts를 호출하는 부분에서 차이가 발생한다.
+
+```
+gcc -o static hello.c -static
+gcc -o dynamic hello.c -no-pie
+```
+
+정적 링크를 통해 컴파일한 바이너리의 경우, puts을 호출하는 부분에서 실제 puts가 존재하는 주소를 직접 호출한다.
+
+```s
+b+ 0x4018bd <main+8>         lea    rax, [rip + 0x7d74c]     RAX => 0x47f010 ◂— 'Hello world!'
+   0x4018c4 <main+15>        mov    rdi, rax                 RDI => 0x47f010 ◂— 'Hello world!'
+ ► 0x4018c7 <main+18>        call   puts                        <puts>
+        s: 0x47f010 ◂— 'Hello world!'
+
+   0x4018cc <main+23>        mov    eax, 0                      EAX => 0
+   0x4018d1 <main+28>        pop    rbp
+   0x4018d2 <main+29>        ret
+```
+
+반면, 동적 링크를 통해 컴파일한 바이너리의 경우, puts를 호출하는 부분에서 실제 puts의 주소가 아닌 puts의 plt 주소를 호출한다.
+
+```s
+b+ 0x40113e <main+8>      lea    rax, [rip + 0xebf]     RAX => 0x402004 ◂— 'Hello world!'
+   0x401145 <main+15>     mov    rdi, rax               RDI => 0x402004 ◂— 'Hello world!'
+ ► 0x401148 <main+18>     call   puts@plt                    <puts@plt>
+        s: 0x402004 ◂— 'Hello world!'
+
+   0x40114d <main+23>     mov    eax, 0                 EAX => 0
+   0x401152 <main+28>     pop    rbp
+   0x401153 <main+29>     ret
+```
+
+## Runtime resolve
 
 바이너리가 실행되면 ASLR에 의해 라이브러리가 임의의 주소에 매핑되고, 이 상태로 라이브러리 함수를 호출하면 함수의 이름을 바탕으로 라이브러리에서 심볼들을 탐색하고, 해당 함수의 정의를 발견하면 그 주소로 실행 흐름을 옮기게 된다. 이 과정을 **runtime resolve**라고 한다. 다만, 이 과정이 매번 이루어진다면 비효율적일 것이므로, ELF는 GOT라는 테이블을 두고, 한번 resolve된 함수의 주소는 이 테이블에 등록했다가 추후 다시 호출되면 저장된 주소를 꺼내서 사용한다. 아래의 코드는 Dreamhack의 강의자료에서 가져온 코드이다. 이 코드를 보면서 설명을 이어가겠다.
 
@@ -36,6 +78,20 @@ int main() {
   puts("Resolving address of 'puts'.");
   puts("Get address from GOT");
 }
+```
+
+```s
+ ► 0x40113e <main+8>     lea    rax, [rip + 0xebf]     RAX => 0x402004 ◂— "Resolving address of 'puts'."
+   0x401145 <main+15>    mov    rdi, rax               RDI => 0x402004 ◂— "Resolving address of 'puts'."
+   0x401148 <main+18>    call   puts@plt                    <puts@plt>
+
+   0x40114d <main+23>    lea    rax, [rip + 0xecd]     RAX => 0x402021 ◂— 'Get address from GOT'
+   0x401154 <main+30>    mov    rdi, rax               RDI => 0x402021 ◂— 'Get address from GOT'
+   0x401157 <main+33>    call   puts@plt                    <puts@plt>
+
+   0x40115c <main+38>    mov    eax, 0                 EAX => 0
+   0x401161 <main+43>    pop    rbp
+   0x401162 <main+44>    ret
 ```
 
 ### resolve되기 전
