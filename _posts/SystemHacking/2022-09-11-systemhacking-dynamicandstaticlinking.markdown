@@ -184,7 +184,26 @@ GOT protection: Partial RELRO | Found 1 GOT entries passing the filter
 
 ## 마치며
 
-오늘 내용은, 조만간 다룰 GOT overwrite라는 공격기법에서 중요하게 사용되는 개념이다. Return Oriented Programming에서 이 공격기법을 다루기 때문에, 개념을 따로 정리해두었다. 다음 포스팅부터는 내 체감상 이해하는데 시간이 걸린 부분들이 대거 등장할 예정이다.
+오늘 내용은, 조만간 다룰 GOT overwrite라는 공격기법에서 중요하게 사용되는 개념이다. Return Oriented Programming에서 이 공격기법을 다루기 때문에, 개념을 따로 정리해두었다. 다음 포스팅부터는 내 체감상 이해하는데 시간이 걸린 부분들이 대거 등장할 예정이다. 잠시 짧게만 예를 들면, 위에서 다루었던 예시에서 **GOT를 임의의 값으로 변조하여도 PLT에서 GOT로 실행 흐름을 옮길 때 GOT의 값을 검증하지 않기 때문에 해커가 원하는 흐름으로 프로그램을 변조**할 수 있다.
+
+```
+pwndbg> set *(unsigned long long*)0x404000 = 0x4142434445464748
+pwndbg> got
+Filtering out read-only entries (display them with -r or --show-readonly)
+
+State of the GOT:
+GOT protection: Partial RELRO | Found 1 GOT entries passing the filter
+[0x404000] puts@GLIBC_2.2.5 -> 0x4142434445464748 ('HGFEDCBA')
+```
+
+그리고 프로그램을 이어서 실행하면, 아래와 같이 Fault가 발생한다. 이를 **GOT overwrite**라고 한다. 이를 더 정교하게 만든 과정을 다음부터 다룰 것이다.
+
+```s
+   0x401040 <puts@plt>      endbr64
+ ► 0x401044 <puts@plt+4>    jmp    qword ptr [rip + 0x2fb6]    <0x4142434445464748>
+    ↓
+
+```
 
 <br/>
 
