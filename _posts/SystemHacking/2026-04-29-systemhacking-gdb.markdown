@@ -58,7 +58,7 @@ $ python3 rop_sol.py
 그 상태로 또 다른 터미널 창에서는 아래와 같이 입력하여 일시정지된 rop_sol.py 프로세스에 Attach하는 방식으로 디버깅을 할 수 있다.
 
 ```
-pwndbg -p $(pidof rop)
+$ pwndbg -p $(pidof rop)
 ```
 
 ## 함수 프롤로그 분석 팁
