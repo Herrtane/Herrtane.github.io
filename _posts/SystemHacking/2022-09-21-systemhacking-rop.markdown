@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 13. RTL, ROP, GOT overwrite, Stack Alignment (2026.04.30 수정)
+title: <System Hacking> 13. RTL, ROP, GOT overwrite, Stack Alignment, libc.so.6 버그 (2026.05.04 수정)
 date: 2022-09-21 19:30:23 +0900
 category: System_Hacking
 comments: true
@@ -259,4 +259,4 @@ $ ldd rop
         /lib64/ld-linux-x86-64.so.2 (0x00007ad609709000)
 ```
 
-
+예전에는 안이랬던거같은데, 아무튼 앞으로는 동봉된 라이브러리를 너무 신뢰해서는 안되겠다.
