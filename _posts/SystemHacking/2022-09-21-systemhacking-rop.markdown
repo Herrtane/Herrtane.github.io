@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 13. Return to Library (RTL), Return Oriented Programming (ROP), GOT overwrite (2026.04.30 수정)
+title: <System Hacking> 13. RTL, ROP, GOT overwrite, Stack Alignment (2026.04.30 수정)
 date: 2022-09-21 19:30:23 +0900
 category: System_Hacking
 comments: true
@@ -91,7 +91,7 @@ pop rdi; ret
 
 <br/>
 
-참고로, 아래처럼 ret 하나짜리 return gadget도 중요하다. 이건 주로 **x64에서 스택 정렬**시에 사용되는데, libc 함수를 호출하기 전에 ret 하나를 끼워넣어서 스택을 정렬해야 정상적으로 프로그램이 동작할 때가 종종 있다.
+참고로, 아래처럼 ret 하나짜리 return gadget도 중요하다. 이건 주로 **x64에서 스택 정렬**시에 사용되는데, libc 함수를 호출하기 전에 ret 하나를 끼워넣어서 스택을 정렬해야 정상적으로 프로그램이 동작할 때가 종종 있다. 자세한 내용은 아래에서 다시 다루겠다.
 
 ```
 payload:
@@ -120,9 +120,37 @@ rop = ROP(elf)
 pop_rdi = rop.find_gadget(['pop rdi', 'ret'])[0]
 ```
 
+### Stack Alignment 심화
+
+ROP / RTL은 call이 아니라 ret으로 호출되는데, 이 과정에서 x64 리눅스의 경우 Stack Alignment 문제가 발생한다. 아래와 같이 control instruction에서 차이가 발생하는 것이다.
+
+- jmp: 스택 변화 없음
+- call: return address push → RSP -= 8
+- ret: pop rip → RSP += 8
+
+함수는 call로 불릴 것을 전제로 ABI가 설계되었으나, ROP에서는 ret으로 함수에 진입하게 된다. 그 결과,
+
+- 함수 entry 시점의 stack alignment가 깨지고
+- 이후 system() → do_system()에서 movaps가 실행되면
+- SIGSEGV가 발생한다 (Ubuntu 18.04부터 do_system()에 이 코드가 추가됨.)
+
+따라서, 위에서 언급했던 것 처럼 RET sled 방식을 통해 Stack을 다시 Alignment해야된다.
+
+- ret 하나 = RSP += 8
+- ret을 하나 더 넣으면 stack alignment 토글
+
+정리해보면 Stack Alignment를 지키면서 함수를 호출하는 흐름은 다음과 같다.
+
+- call 실행 직전 RSP는 16의 배수 ( stack align O )
+- 함수의 entry point에선 RSP+8이 16의 배수 ( stack align X )
+- 함수의 프롤로그 실행 후 RSP는 16의 배수 ( stack align O )
+- RBP는 항상 16의 배수 ( stack align O )
+
+함수를 호출할 때 2번 과정에서 잠시 stack align이 깨지고 3번에서 다시 stack align이 맞춰진다. 참고로, 4번만 신경 써줘도 공격 코드를 짜는데 지장이 없다.
+
 ### RTL과 ROP
 
-Return To Library (ret2libc)는 libc 함수 하나를 호출하여 NX를 우회하는 가장 기본적인 기법이라면, Return Oriented Programming (ROP)는 이를 확장하여, 여러 가젯 체인을 구성하는 방법이다. 즉, RTL을 일반화한 형태가 바로 ROP라고 보아도 무방하다.
+**Return To Library (ret2libc)**는 libc 함수 하나를 호출하여 NX를 우회하는 가장 기본적인 기법이라면, **Return Oriented Programming (ROP)**는 이를 확장하여, 여러 가젯 체인을 구성하는 방법이다. 즉, RTL을 일반화한 형태가 바로 ROP라고 보아도 무방하다.
 
 ### 익스플로잇 플랜
 
