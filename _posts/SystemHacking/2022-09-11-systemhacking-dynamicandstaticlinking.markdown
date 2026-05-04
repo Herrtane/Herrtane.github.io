@@ -37,8 +37,8 @@ int main() {
 이 코드를 다음과 같이 동적, 정적 링크를 하여 GDB로 비교를 해보면, puts를 호출하는 부분에서 차이가 발생한다.
 
 ```
-gcc -o static hello.c -static
-gcc -o dynamic hello.c -no-pie
+$ gcc -o static hello.c -static
+$ gcc -o dynamic hello.c -no-pie
 ```
 
 정적 링크를 통해 컴파일한 바이너리의 경우, puts을 호출하는 부분에서 실제 puts가 존재하는 주소를 직접 호출한다.
