@@ -105,8 +105,8 @@ payload:
 그렇다면 이런 가젯들은 직접 찾아야할까? 아니다. 기존에 뛰어난 선배 개발자 및 해커분들이 개발해놓은 좋은 도구들을 잘 활용하면 된다. 대표적으로는 **ROPgadget, pwntools** 등의 도구들에서 잘 구현되어있다.
 
 ```
-pip install ROPgadget
-ROPgadget --binary ./vuln | grep "pop rdi"
+$ pip install ROPgadget
+$ ROPgadget --binary ./vuln | grep "pop rdi"
 ```
 
 이를 pwntools에서 같이 사용하는 방법은 다음과 같다.
