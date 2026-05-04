@@ -231,3 +231,32 @@ p.interactive()
 2. 애초에 write 함수 0x40 만큼 출력한 후에, 내가 보낸 payload로 인해 leak된 값이 출력된다. 즉, p.send(payload)를 하면, 돌아오는 데이터는 A*0x40 + leak 주소. 내가 recvn으로 받으니까 AAAAAA값이 받아지는거였다.. 그리고, recv(1024)로 받아도, 첫 write 함수가 보낸 값만 받아진다. 따라서, recvuntil()로 먼저 A값을 다 받고, 그 뒤의 주소를 받아야한다. 나는 당연히 write보다 먼저 leak 작업을 했으니, leak주소가 먼저 나올줄알았다..
 
 결론 : **recv 되는 출력값을 먼저 확인하는 습관을 가지자..**
+
+## libc.so.6 파일 주의사항
+
+아참, 이번에 (2026.05.04) 복습하면서 계속 Payload도 검토해보고 Stack Alignment도 검토해보았는데도 문제가 발생하는 현상이 있어서 디버깅을 진행했었는데, 무슨 이유에서인지 모르겠으나 Dreamhack wargame에 동봉된 libc.so.6를 참조하면 제대로 된 system 함수의 주소를 불러오지 못하는 현상을 발견했다. (read 함수의 got를 확인해보면 system이 아니라 엉뚱한 함수로 매핑되어있는 현상)
+
+```
+pwndbg> got
+Filtering out read-only entries (display them with -r or --show-readonly)
+
+State of the GOT:
+GOT protection: Partial RELRO | Found 6 GOT entries passing the filter
+[0x601018] puts@GLIBC_2.2.5 -> 0x78594fe87be0 (puts) ◂— endbr64
+[0x601020] write@GLIBC_2.2.5 -> 0x78594ff1c590 (write) ◂— endbr64
+[0x601028] __stack_chk_fail@GLIBC_2.4 -> 0x4005d6 (__stack_chk_fail@plt+6) ◂— push 2
+[0x601030] printf@GLIBC_2.2.5 -> 0x78594fe60100 (printf) ◂— endbr64
+[0x601038] read@GLIBC_2.2.5 -> 0x78594fe57e60 (____strtoull_l_internal+768) ◂— add byte ptr [rdi], cl
+[0x601040] setvbuf@GLIBC_2.2.5 -> 0x68732f6e69622f
+```
+
+그래서 아래와 같이 ldd 명령어를 통해 이 바이너리가 참조하는 정확한 라이브러리로 python 코드의 경로를 수정 (ELF('./libc.so.6')부분)해주니, 정상동작했다...
+
+```
+$ ldd rop
+        linux-vdso.so.1 (0x00007ffed94f8000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007ad609400000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007ad609709000)
+```
+
+
