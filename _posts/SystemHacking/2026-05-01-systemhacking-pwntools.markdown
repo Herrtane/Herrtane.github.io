@@ -53,3 +53,8 @@ p.sendafter("Buf: ", payload)
 * `read()`와 완벽하게 맞음
 
 > **이 바이너리는 `read()` 기반이므로 무조건 `sendafter` 또는 `send()` 계열 (raw) 사용해야 안전하다!!**
+
+## p32/p64 vs str().encode()
+
+- p32/p64 = 메모리에 직접 넣을 값 (주소, 숫자 등)
+- str().encode() = 프로그램에 타이핑해서 입력해야 되는 값
