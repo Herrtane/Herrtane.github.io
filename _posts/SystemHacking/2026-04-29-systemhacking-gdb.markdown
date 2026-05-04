@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 22. GDB 사용법 정리
+title: <System Hacking> 22. GDB 사용법 및 함수 프롤로그 분석 팁 정리
 date: 2026-04-29 10:30:23 +0900
 category: System_Hacking
 comments: true
@@ -36,3 +36,27 @@ bt : backtrace. Call stack 출력
 set <주소/레지스터> = <변경할 값> : 프로세스의 메모리 상태를 변경할 수 있는 명령어
 print <함수명> : 함수의 주소 반환
 ```
+
+## 함수 프롤로그 분석 팁
+
+종종 b main으로 중단점을 설정하고 start를 하면, main 함수의 완전 첫부분은 자동으로 지나치는 경우가 있다. 초반 함수의 프롤로그부터 보고 싶은 경우가 있는데 (특히 배열, 변수의 크기 할당을 직접 확인하고 싶거나, Stack Canary의 설정값을 확인하고 넘어가고 싶을때) 그럴 때를 대비해서 b main 말고 b* main+0로 중단점을 설정해서 더 정확히 멈추게 하자.
+
+<br/>
+
+한편, 이건 습관으로 들여놓으면 좋은데, 초반 main의 return address (0x7ffff7c2a1ca (__libc_start_call_main+n))와 rbp를 잘 관찰하고 해당 값들을 기억해두면, 이후 Canary leak이나 Stack을 확인하는 등의 작업에서 헷갈리지 않고 안정적으로 분석이 가능하더라. 그러니 프롤로그 부분도 신경써서 분석하도록 하자.
+
+```s
+b+ 0x4006f7 <main>       push   rbp
+   0x4006f8 <main+1>     mov    rbp, rsp                            RBP => 0x7fffffffdd30 —▸ 0x7fffffffddd0 —▸ 0x7fffffffde30 ◂— ...
+   0x4006fb <main+4>     sub    rsp, 0x40                           RSP => 0x7fffffffdcf0 (0x7fffffffdd30 - 0x40)
+ ► 0x4006ff <main+8>     mov    rax, qword ptr fs:[0x28]            RAX, [0x7ffff7fb4768] => 0xb6f364cd65e18e00
+   0x400708 <main+17>    mov    qword ptr [rbp - 8], rax            [0x7fffffffdd28] <= 0xb6f364cd65e18e00
+   0x40070c <main+21>    xor    eax, eax                            EAX => 0
+   0x40070e <main+23>    mov    rax, qword ptr [rip + 0x20095b]     RAX, [stdin@@GLIBC_2.2.5] => 0x7ffff7e038e0 (_IO_2_1_stdin_) ◂— 0xfbad2088
+   0x400715 <main+30>    mov    ecx, 0                              ECX => 0
+   0x40071a <main+35>    mov    edx, 2                              EDX => 2
+   0x40071f <main+40>    mov    esi, 0                              ESI => 0
+   0x400724 <main+45>    mov    rdi, rax                            RDI => 0x7ffff7e038e0 (_IO_2_1_stdin_) ◂— 0xfbad2088
+```
+
+마지막으로, 이 Disassembled code에서 Canary 설정 부분을 놓치지 말자. 저게 지나가야 Canary 값이 저장되는 것이다.
