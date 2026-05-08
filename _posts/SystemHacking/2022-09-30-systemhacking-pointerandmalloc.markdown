@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 18. 포인터와 malloc에 대한 완전한 복습
+title: <System Hacking> 18. 포인터와 malloc에 대한 완전한 복습 (2026.05.08 수정)
 date: 2022-09-30 21:30:23 +0900
 category: System_Hacking
 comments: true
