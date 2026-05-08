@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 17. RELRO, PIE, 그리고 Hook Overwrite
+title: <System Hacking> 17. RELRO, PIE, 그리고 Hook Overwrite (2026.05.08 수정)
 date: 2022-09-30 20:30:23 +0900
 category: System_Hacking
 comments: true
@@ -144,6 +144,10 @@ int main() {
 ```
 
 위의 코드는 Dreamhack의 Free Hook Overwrite 실습 예제이다. 이 포스팅에서는 이 문제를 해결하는 코드보다는, 문제를 해결하는 과정에서 내가 고민했던 내용들을 적어보려고 한다. 익스플로잇 코드는 생략한다.
+
+<br/>
+
+**이 문제에서는 Canary Leak이 필요 없는 이유 (2026.05.08 추가)** : ROP에서는 main함수의 return까지 도달해서 원하는 Gadget의 주소로 ret 하므로 카나리를 반드시 유지해야 하지만, fho에서는 main 함수의 return에 도달할 필요 없이, 그 전에 arbitrary write/free로 익스플로잇이 가능해 카나리가 중요하지 않다.
 
 <br/>
 
