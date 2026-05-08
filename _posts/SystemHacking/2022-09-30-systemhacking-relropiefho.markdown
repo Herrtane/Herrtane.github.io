@@ -47,7 +47,7 @@ ASLR이 도입되기 전에는 리눅스 실행파일들이 재배치를 고려�
 
 <br/>
 
-이 변수들은 **libc.so에서 쓰기 가능한 bss section에 위치**하므로, **libc가 매핑된 주소를 알때** 이 변수를 조작하고 malloc, realloc, free 등을 호출하여 실행흐름을 조작할 수 있다. **훅을 실행할 때 기존 함수에 전달한 인자를 같이 전달해 주기 때문에 __malloc_hook을 system 함수의 주소로 덮고, malloc(“/bin/sh”)을 호출하여 셸을 획득하는 등의 공격이 가능**하다.
+> 정리하자면, malloc, free, realloc 등에는 각각에 대응되는 Hook 변수들이 존재하며, 이 변수들은 **libc.so에서 쓰기 가능한 bss section에 위치**하므로, **libc가 매핑된 주소를 알때** 이 변수를 조작하고 malloc, realloc, free 등을 호출하여 실행흐름을 조작할 수 있다. **Hook을 실행할 때 malloc, realloc 등의 함수에 원래 전달하려던 인자를 같이 전달**해 주기 때문에 **__malloc_hook을 system 함수의 주소로 덮고, malloc(“/bin/sh”)을 호출하여 셸을 획득하는 등의 공격이 가능**하다.
 
 <br/>
 
