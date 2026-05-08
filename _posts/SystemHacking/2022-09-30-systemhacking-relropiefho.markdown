@@ -6,18 +6,24 @@ category: System_Hacking
 comments: true
 ---
 
+## Introduction
+
+ELF는 GOT를 활용함으로써, 반복되는 라이브러리 함수의 호출에 사용되는 오버헤드를 줄일 수 있었다. 앞선 포스팅에서, 함수가 처음 호출될 때 함수의 주소를 구하고, 이를 GOT에 적는 Lazy Binding을 다루었었다. Lazy binding을 하는 바이너리는 **실행 중에 GOT 테이블을 업데이트할 수 있어야 하므로 GOT에 쓰기 권한이 부여**된다. 그런데 이는 앞서 배운 공격 기법들에서 알 수 있듯, 바이너리를 취약하게 만드는 원인이 된다.
+
+<br/>
+
+또한 ELF의 Data Segment에는 프로세스의 초기화 및 종료와 관련된 **.init_array, .fini_array**가 있다. 이 영역들은 프로세스의 시작과 종료에 실행할 함수들의 주소를 저장하고 있는데, 여기에 공격자가 임의로 값을 쓸 수 있다면, 프로세스의 실행 흐름이 조작될 수 있다.
+
 ## RELRO (Relocation Read-Only)
 
-프로세스의 데이터 세그먼트를 보호하는 RELocation Read-Only(RELRO)는 쓰기 권한이 불필요한 데이터 세그먼트에 쓰기 권한을 제거하는 방어 기법이다.
+프로세스의 데이터 세그먼트를 보호하는 **RELocation Read-Only(RELRO)는 쓰기 권한이 불필요한 Data Segment의 쓰기 권한을 제거하는 방어 기법**이다.
 
 <br/>
 
 RELRO는 RELRO를 적용하는 범위에 따라 두 가지로 구분되는데, 하나는 RELRO를 부분적으로 적용하는 **Partial RELRO**이고, 나머지는 가장 넓은 영역에 RELRO를 적용하는 **Full RELRO**이다.
 
-1. Partial RELRO : .init_array, .fini_array, .got만 쓰기권한 제거. .got.plt, .data, .bss는 쓰기권한 유지. (.got.plt는 Partial RELRO에서만 생성)
-2. Full RELRO : .got전체 쓰기권한까지 제거. .data, .bss에만 쓰기권한 유지. 라이브러리 함수들의 주소가 바이너리의 로딩 시점에 모두 바인딩되므로 Lazy binding을 사용하지 않고, .got에 쓰기권한이 부여되지 않음.
-
-.init_array, .fini_array영역에는 프로세스의 시작, 종료에 실행할 함수들의 주소가 저장되어있으므로, 공격자가 임의로 값을 넣는다면 프로세스의 실행 흐름이 조작될 위험이 있다.
+1. Partial RELRO : .init_array, .fini_array, .got만 쓰기권한 제거. .got.plt, .data, .bss는 쓰기권한 유지. (**.got.plt는 Partial RELRO에서만 생성되며, Partial RELRO가 적용된 바이너리에서 대부분의 함수들의 GOT 엔트리는 .got.plt에 저장된다. 그래서 앞에서 .got.plt에서 GOT 엔트리를 확인할 수 있었고, GOT Overwrite가 가능했던 것**이다.)
+2. Full RELRO : .got전체 쓰기권한까지 제거. .data, .bss에만 쓰기권한 유지. **라이브러리 함수들의 주소가 바이너리의 로딩 시점에 모두 바인딩되므로 Lazy binding을 사용하지 않고, .got에 쓰기권한이 부여되지 않으므로 다른 우회방법이 필요**하다.
 
 <br/>
 
