@@ -138,8 +138,14 @@ ptr[0] = ptr[1]; // Heap 내부에서 값만 복사
 
 ```
 ptr[0] = __free_hook 주소
-ptr[1] = system 주소
+ptr[1] = 원하는 함수/코드 주소
 ```
+
+ptr[1]에는 one_gadget을 써도 되고, ROPgadget을 써도 되지만, 여기서는 system 함수에 "/bin/sh" 이라는 문자열을 그냥 주고 있으니 system 함수가 실행되는 주소를 구해서 넣어줘도 된다. (해당 문제는 PIE가 안걸려있음)
+
+<br/>
+
+단, 바로 이전 edi에 '/bin/sh' 을 넣는 동작의 주소로 넣어주어야 /bin/sh 인자가 들어가고 바로 다음에 system@plt 가 실행되기 때문에, /bin/sh로 초기화해주는 주소를 넣어야 한다.
 
 ## 마치며
 
