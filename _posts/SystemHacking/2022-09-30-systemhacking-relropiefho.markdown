@@ -43,7 +43,11 @@ ASLR이 도입되기 전에는 리눅스 실행파일들이 재배치를 고려�
 
 ## Hook Overwrite
 
-위에서 Full RELRO의 경우, 기존의 GOT overwrite 기법이 막히게 되므로, 새로운 공격방법을 모색해야 하는데, 그 중 라이브러리에 위치한 **hook**을 이용하는 공격기법이 생겨났다. 대표적으로 malloc, realloc, free함수를 호출할 때, 함수의 초반부에서 동적 메모리의 할당과 해제 과정에서 발생하는 버그를 디버깅하기 위해 __malloc_hook, __free_hook 등의 포인터 존재여부를 검사한다. 이 변수들은 **libc.so에서 쓰기 가능한 bss section에 위치**하므로, libc가 매핑된 주소를 알때 이 변수를 조작하고 malloc, realloc, free 등을 호출하여 실행흐름을 조작할 수 있다. **훅을 실행할 때 기존 함수에 전달한 인자를 같이 전달해 주기 때문에 __malloc_hook을 system 함수의 주소로 덮고, malloc(“/bin/sh”)을 호출하여 셸을 획득하는 등의 공격이 가능**하다.
+위에서 Full RELRO의 경우, 기존의 GOT overwrite 기법이 막히게 되므로, 새로운 공격방법을 모색해야 하는데, 그 중 라이브러리에 위치한 **hook**을 이용하는 공격기법이 생겨났다. 대표적으로 malloc, realloc, free함수를 호출할 때, 함수의 초반부에서 동적 메모리의 할당과 해제 과정에서 발생하는 버그를 디버깅하기 위해 __malloc_hook, __free_hook 등의 포인터 존재여부를 검사한다. 
+
+<br/>
+
+이 변수들은 **libc.so에서 쓰기 가능한 bss section에 위치**하므로, **libc가 매핑된 주소를 알때** 이 변수를 조작하고 malloc, realloc, free 등을 호출하여 실행흐름을 조작할 수 있다. **훅을 실행할 때 기존 함수에 전달한 인자를 같이 전달해 주기 때문에 __malloc_hook을 system 함수의 주소로 덮고, malloc(“/bin/sh”)을 호출하여 셸을 획득하는 등의 공격이 가능**하다.
 
 <br/>
 
@@ -65,7 +69,7 @@ void *__libc_malloc (size_t bytes)
 }
 ```
 
-위의 소스코드는 glibc의 malloc.c의 일부이며, 함수의 프롤로그에서 __malloc_hook을 검사하여 호출하는 과정이 들어있다. (참고로, 최근 소스코드에서는 보안이슈로 이 부분이 삭제된 것 같다. 일단 hook에 대한 개념을 잡기위해 예전 소스코드를 가져왔다.)
+위의 소스코드는 glibc의 malloc.c의 일부이며, 함수의 프롤로그에서 __malloc_hook을 검사하여 호출하는 과정이 들어있다. (**다만, 최근 소스코드에서는 보안이슈로 이 부분이 삭제되어서 이 공격은 불가능**하다. 일단 hook에 대한 개념을 잡기위해 예전 소스코드를 가져왔다.)
 
 ```c
 void weak_variable (*__free_hook) (void *, const void *) = NULL;
