@@ -39,13 +39,19 @@ print <함수명> : 함수의 주소 반환
 
 ### python 스크립트로 짠 코드에 대한 디버깅 방법
 
-디버깅에는 여러 가지 방법이 있지만, 나는 **PID 기반 GDB attach 디버깅** 방식을 선호한다. 총 2개의 터미널 창이 필요하다. 우선, pwntools를 활용하여 작성한 python 스크립트의 상단에 다음과 같이 pause()를 추가한다.
+디버깅에는 여러 가지 방법이 있지만, 나는 **PID 기반 GDB attach 디버깅** 방식을 선호한다. 총 2개의 터미널 창이 필요하다. 우선, pwntools를 활용하여 작성한 python 스크립트의 상단에 다음과 같이 추가한다.
 
 ```python
 from pwn import *
 
-p = process('./rop')
-pause()
+p = gdb.debug(
+    ['./ld-linux-x86-64.so.2', './hook'],
+    env={"LD_LIBRARY_PATH": "."},
+    gdbscript='''
+break main
+continue
+'''
+)
 ...
 ```
 
