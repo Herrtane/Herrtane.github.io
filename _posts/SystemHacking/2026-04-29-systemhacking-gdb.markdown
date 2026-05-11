@@ -44,14 +44,14 @@ print <함수명> : 함수의 주소 반환
 ```python
 from pwn import *
 
-p = gdb.debug(
-    ['./ld-linux-x86-64.so.2', './hook'],
-    env={"LD_LIBRARY_PATH": "."},
-    gdbscript='''
-break main
+context.terminal = ['bash', '-c']
+
+p = process(['./ld-linux-x86-64.so.2', './hook'], env={"LD_LIBRARY_PATH":"."})
+gdb.attach(p, gdbscript='''
+break *main
 continue
-'''
-)
+''')
+pause()
 ...
 ```
 
