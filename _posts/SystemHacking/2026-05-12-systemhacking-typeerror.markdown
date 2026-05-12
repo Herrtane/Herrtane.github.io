@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 26. Type Error, SIGSEGV
+title: <System Hacking> 27. Type Error, SIGSEGV
 date: 2026-05-12 10:32:23 +0900
 category: System_Hacking
 comments: true
