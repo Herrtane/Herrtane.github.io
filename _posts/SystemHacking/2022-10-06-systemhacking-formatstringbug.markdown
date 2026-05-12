@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 19. Format String Bug
+title: <System Hacking> 19. Format String Bug (2026.05.12 수정)
 date: 2022-10-06 10:30:23 +0900
 category: System_Hacking
 comments: true
@@ -51,10 +51,94 @@ printf("%5$p");         // Format string bug : 8번째 parameter에 해당하는
 
 ```
 AAAAAAAA 0x7ffd62e94cf0 0x7f3b4926d8d0 0x1f (nil) (nil) 0x4141414141414141 0x2520702520702520...
+
+RDI = 0x7ffd62e94cf0  ← format string 포인터 (printf가 해석용으로 사용)
+RSI = 0x7ffd62e94cf0  ← 1번째 %p 출력 (우연히 RDI와 같은 값)
+
+1번째 %p → RSI = 0x7ffd62e94cf0 (format 버퍼 주소)
+2번째 %p → RDX = 0x7f3b4926d8d0
+3번째 %p → RCX = 0x1f
+4번째 %p → R8  = (nil)
+5번째 %p → R9  = (nil)
+──────────────────────────── 스택 시작
+6번째 %p → 스택 = 0x4141414141414141 ('AAAAAAAA') ← format 버퍼 자기 자신
+7번째 %p → 스택 = 0x2520702520702520 (' %p %p ..')
 ```
 
 이런식으로 출력되고, 7번째부터 스택에 저장된 값이 출력됨을 확인할 수 있다. gdb를 확인해보면 RDI, RSI에는 0x7ffd62e94cf0이 저장되어있다. (참고로 이 주소는 'AAAAAAAA %p %p ....'를 가리키는 주소이다.)
 
-## 마치며
+### Example Code (2026.05.12 추가)
 
-구체적인 FSB 예시나 실습은 추후 포스팅하도록 하겠다. 우선 일반적인 개념을 먼저 포스팅했다.
+더 정확하고 직관적인 이해를 위해 예시 코드로 실습하면서 FSB를 살펴보자.
+
+```c
+// gcc fsb_practice.c -o fsb_practice
+#include <stdio.h>
+
+int main(){
+        char format[0x100];
+
+        printf("Format: ");
+        scanf("%[^\n]", format);
+        printf(format);
+
+        return 0;
+}
+```
+
+우선 여기서 `scanf("%[^\n]", format);`라는 낯선 표현이 나온다. 해당 코드는 **`scanf`의 문법 중 하나인 문자 집합 지정자**로, 아래와 같이 사용한다.
+
+```c
+// usage : %[집합]
+// ^의 역할 : [] 안에서 맨 앞에 ^이 오면 "이 문자들을 제외한" 이라는 의미
+
+%[abc]	// a, b, c 중 하나가 나올 때까지만 읽음
+%[a-z]	// 소문자가 나올 때까지만 읽음
+%[^\n]	// \n이 아닌 문자들을 읽음
+%[^abc]	// a, b, c가 아닌 문자들을 읽음
+```
+
+또한, 일반적인 `scanf("%s", buf)`와의 차이점은 다음과 같다.
+
+```c
+scanf("%s", buf)     // 공백, 탭, 개행 모두에서 중단
+scanf("%[^\n]", buf) // 개행에서만 중단 → 공백 포함해서 읽을 수 있음
+```
+
+그래서 "Hello World"처럼 공백이 포함된 문자열을 읽을 때 `%[^\n]`을 사용한다. 
+
+<br/>
+
+이제 이를 토대로 `%p %p %p %p %p %p %p %p %p %p`라는 입력을 주게 되면, FSB가 발생하여 레지스터 및 스택의 값들을 확인할 수 있게 된다. GDB를 통해 확인해보면 보기가 더 좋다.
+
+```sh
+   0x5555555551d9 <main+80>     lea    rax, [rbp - 0x110]     RAX => 0x7fffffffdd90 ◂— '%p %p %p %p %p %p %p %p %p %p'
+   0x5555555551e0 <main+87>     mov    rdi, rax               RDI => 0x7fffffffdd90 ◂— '%p %p %p %p %p %p %p %p %p %p'
+   0x5555555551e3 <main+90>     mov    eax, 0                 EAX => 0
+ ► 0x5555555551e8 <main+95>     call   printf@plt                  <printf@plt>
+        format: 0x7fffffffdd90 ◂— '%p %p %p %p %p %p %p %p %p %p'
+        rsi: 0
+        rdx: 0
+        rcx: 0
+        r8: 0xa
+        r9: 0
+        arg[6]: 0x7025207025207025 ('%p %p %p')
+        arg[7]: 0x2520702520702520 (' %p %p %')
+        arg[8]: 0x2070252070252070 ('p %p %p ')
+        arg[9]: 0x7025207025
+        arg[10]: 0x7fffffffdeb0 —▸ 0x7fffffffdef0 —▸ 0x555555557db0 (__do_global_dtors_aux_fini_array_entry) —▸ 0x555555555140 (__do_global_dtors_aux) ◂— endbr64
+
+   0x5555555551ed <main+100>    mov    eax, 0                       EAX => 0
+   0x5555555551f2 <main+105>    mov    rdx, qword ptr [rbp - 8]
+   0x5555555551f6 <main+109>    sub    rdx, qword ptr fs:[0x28]
+   0x5555555551ff <main+118>    je     main+125                    <main+125>
+```
+
+여기서 혼동하면 안되는건, **rdi는 format string 포인터 자체이기 때문에, printf 내부에서 %p를 만났을 때 "다음 인자를 가져와라" 하면 rdi는 이미 소비된 상태이고 rsi부터 시작한다는 것**이다.
+
+```c
+printf("%p %p %p", a, b, c);
+//      ↑           ↑  ↑  ↑
+//     rdi         rsi rdx rcx
+//  (포맷 해석용)  (1번째 %p) (2번째 %p) (3번째 %p)
+```
