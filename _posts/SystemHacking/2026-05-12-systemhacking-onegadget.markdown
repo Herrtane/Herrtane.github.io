@@ -1,7 +1,7 @@
 ---
 layout: post
 title: <System Hacking> 25. One gadget, stdout 전역변수
-date: 2026-05-12 20:30:23 +0900
+date: 2026-05-12 10:30:23 +0900
 category: System_Hacking
 comments: true
 ---
