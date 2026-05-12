@@ -40,13 +40,13 @@ Hoot overwrite 부분에서 복습을 진행하다보니 one gadget에 대한 �
    - 예: BOF, FSB, OOB 등
 
 2. **one_gadget 위치 찾기**
-   - one_gadget 도구를 사용하여 libc 내부 가젯 탐색
+   - `one_gadget` 도구를 사용하여 libc 내부 가젯 탐색
 
 3. **libc_base 계산**
    - leak을 이용해 libc base 주소 계산
 
 4. **RET 덮어쓰기**
-   - libc_base + one_gadget offset으로 반환 주소 overwrite
+   - `libc_base + one_gadget` offset으로 반환 주소 overwrite
 
 5. **조건 만족시키기**
    - gadget 실행 시 요구되는 constraint를 만족하도록 환경 구성
