@@ -128,6 +128,8 @@ fastbinsY[8] : unused
 fastbinsY[9] : unused
 ```
 
+* 여기서 모든 바이트 크기는 `[할당 요청 Size] + [16bytes Header]` 를 합한 값이다.
+
 1. smallbin : 32바이트 이상 1024바이트 미만의 청크 보관. 하나의 smallbin에는 같은 크기의 청크들만 보관되며 index가 증가하면 저장되는 청크들의 크기가 16바이트씩 커진다. circular doubly-linked list. FIFO. (LIFO는 속도가 빠르지만 파편화가 심하고, address-ordered는 정렬을 해야해서 속도는 느리나 파편화가 제일 적고, FIFO는 그 중간.) consolidation (인접한 두 청크가 해제되어 있고 이들이 smallbin에 들어있으면, 이 둘은 병합됨.)
 2. fastbin : 크기가 작은 청크들이 큰 청크들보다 빈번히 할당 및 해제되므로, **특정 크기 미만의 청크들 (32바이트 이상 176바이트 이하)은 smallbin 대신 fastbin에 저장**함. 메모리 단편화보다 속도를 조금 더 우선순위로 두는 bin. 16바이트 단위로 총 10개의 fastbin 존재 (리눅스는 이 중에서 작은 크기부터 7개의 fastbin만을 사용함. 32바이트 이상, 128바이트 이하의 청크들.) single-linked list (unlink과정 필요없음). LIFO. **fastbin에 저장되는 청크들은 서로 병합되지 않으므로 시간이 지날수록 메모리 단편화 발생 우려**.
 3. largebin : 1024바이트 이상의 청크 보관. doubly-linked list. consolidation. smallbin, fastbin과는 다르게, 하나의 largebin에는 일정 범위의 청크들을 보관 (따라서 적은 수의 largebin으로 다양한 크기를 갖는 청크들을 관리 가능). best-fit으로 꺼내 재할당.
