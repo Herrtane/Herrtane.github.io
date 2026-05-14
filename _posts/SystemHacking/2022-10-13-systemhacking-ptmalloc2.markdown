@@ -84,12 +84,86 @@ Size   │                                    │    │                        
 
 ### bin
 
-단순하게 모든 chunk들을 하나의 linked list로 관리하면 구현하기는 편하겠지만, 이는 malloc시에 적절한 freed chunk를 찾기 위해 모든 list를 탐색해야 된다는 의미가 되므로, 성능 상으로 상당히 비효율적이다. bin은 문자 그대로, 사용이 끝난 청크들이 저장되는 객체이다. 메모리의 낭비를 막고, 해제된 청크를 빠르게 재사용할 수 있게 한다. ptmalloc에는 총 128개의 bin이 정의되어 있는데, 62개는 smallbin, 63개는 largebin, 1개는 unsortedbin, 나머지 2개는 사용되지 않는다. fastbin은 별도로 fastbin[10]만큼 구현되어서 관리된다. 
+단순하게 모든 chunk들을 하나의 linked list로 관리하면 구현하기는 편하겠지만, 이는 malloc시에 적절한 freed chunk를 찾기 위해 모든 list를 탐색해야 된다는 의미가 되므로, 성능 상으로 상당히 비효율적이다. bin 객체는 문자 그대로, 사용이 끝난 청크들이 저장되는 객체이다. 메모리의 낭비를 막고, 해제된 청크를 빠르게 재사용할 수 있게 한다. ptmalloc에는 총 128개의 bin이 정의되어 있는데, 62개는 smallbin, 63개는 largebin, 1개는 unsortedbin, 나머지 2개는 사용되지 않는다. fastbin은 별도로 fastbin[10]만큼 구현되어서 관리된다.
+
+```c
+// --- main bin 배열 ---
+bins[128]
+
+bins[0]  : unused
+
+bins[1]  : unsorted bin
+
+// small bins (exact size class)
+bins[2]  : smallbin (≈ 0x20)
+bins[3]  : smallbin (≈ 0x30)
+bins[4]  : smallbin (≈ 0x40)
+...
+bins[63] : smallbin (≈ ~0x400)
+
+
+// large bins (range-based)
+bins[64]  : largebin (smallest large range)
+bins[65]  : largebin
+...
+bins[126] : largebin
+bins[127] : largebin (largest range)
+
+
+// --- fastbin (별도 구조, bins와 독립) ---
+fastbinsY[10]
+
+// 크기별 fastbin
+fastbinsY[0] : size 0x20
+fastbinsY[1] : size 0x30
+fastbinsY[2] : size 0x40
+fastbinsY[3] : size 0x50
+fastbinsY[4] : size 0x60
+fastbinsY[5] : size 0x70
+fastbinsY[6] : size 0x80
+
+// 보통 glibc는 여기까지만 실제 사용
+fastbinsY[7] : unused
+fastbinsY[8] : unused
+fastbinsY[9] : unused
+```
 
 1. smallbin : 32바이트 이상 1024바이트 미만의 청크 보관. 하나의 smallbin에는 같은 크기의 청크들만 보관되며 index가 증가하면 저장되는 청크들의 크기가 16바이트씩 커진다. circular doubly-linked list. FIFO. (LIFO는 속도가 빠르지만 파편화가 심하고, address-ordered는 정렬을 해야해서 속도는 느리나 파편화가 제일 적고, FIFO는 그 중간.) consolidation (인접한 두 청크가 해제되어 있고 이들이 smallbin에 들어있으면, 이 둘은 병합됨.)
 2. fastbin : 크기가 작은 청크들이 큰 청크들보다 빈번히 할당 및 해제되므로, **특정 크기 미만의 청크들 (32바이트 이상 176바이트 이하)은 smallbin 대신 fastbin에 저장**함. 메모리 단편화보다 속도를 조금 더 우선순위로 두는 bin. 16바이트 단위로 총 10개의 fastbin 존재 (리눅스는 이 중에서 작은 크기부터 7개의 fastbin만을 사용함. 32바이트 이상, 128바이트 이하의 청크들.) single-linked list (unlink과정 필요없음). LIFO. **fastbin에 저장되는 청크들은 서로 병합되지 않으므로 시간이 지날수록 메모리 단편화 발생 우려**.
 3. largebin : 1024바이트 이상의 청크 보관. doubly-linked list. consolidation. smallbin, fastbin과는 다르게, 하나의 largebin에는 일정 범위의 청크들을 보관 (따라서 적은 수의 largebin으로 다양한 크기를 갖는 청크들을 관리 가능). best-fit으로 꺼내 재할당.
 4. unsortedbin : 분류되지 않은 청크들 보관. circular doubly-linked list. fastbin에 들어가지 않는 모든 청크들은 해제되었을 때 크기를 구분하지 않고 우선 unsortedbin에 보관됨 (**단, fastbin에 해당되는 chunk는 fastbin으로 바로 들어감**). 이후에 메모리 할당 요청시 unsorted bin을 제일 먼저 확인하여 적절한 크기의 chunk가 있으면 재사용하는 **cache와 같은 효과**를 냄. **만일, 적절한 크기의 chunk가 존재하지 않으면 chunk들은 각각 자신의 bin으로 들어감 (단 1번의 기회)**. 청크 분류에 낭비되는 비용과 시간을 줄일 수 있음.
+
+동작 흐름을 더 보기 쉽게 정리하자면 다음과 같다.
+
+```
+1. free 호출됨
+
+2. chunk 크기가 fastbin 범위인가?
+YES →
+    fastbin에 넣고 끝
+    (병합 안함, 바로 종료)
+NO →
+    다음 단계 진행
+
+3. consolidation 고려
+
+앞 chunk (prev) free인가? → 병합 진행 → unsorted bin에 삽입
+뒤 chunk (next) free인가? → 병합 진행 → unsorted bin에 삽입
+
+4. malloc 호출됨
+
+5. fastbin 확인
+size 맞는 fastbin 있으면 → 바로 꺼내서 반환
+없으면 → 다음
+
+6. unsorted bin을 순회하면서 확인 → 요청 size에 맞는 chunk가 있는가? (1번의 기회, 재사용할 기회를 주는 cache 역할)
+Yes
+→ unsorted에서 꺼냄
+→ 필요하면 split
+→ 바로 반환
+No
+→ 각 chunk를 smallbin 또는 largebin으로 이동하여 정식 분류
+```
 
 ### arena
 
