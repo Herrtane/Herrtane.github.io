@@ -342,6 +342,19 @@ typedef struct tcache_perthread_struct
 } tcache_perthread_struct;
 ```
 
+```c
+tcache_perthread_struct:
+
+entries[0] → 0x20 chunk list
+entries[1] → 0x30 chunk list
+entries[2] → 0x40 chunk list
+...
+entries[63] → 0x410 chunk list
+
+entry[i]:
+  chunk → chunk → chunk   (최대 7개)
+```
+
 몇가지 정리해두면 좋을 tcache에 대한 내용들이다. 
 
 1. **tcache는 다른 bin들과 달리 main_arena에 존재하지 않고 tcache_perthread_struct에 존재**한다.
