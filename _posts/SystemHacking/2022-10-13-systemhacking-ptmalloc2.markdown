@@ -140,6 +140,12 @@ fastbinsY[9] : unused
 ```
 1. free 호출됨
 
+1.5. tcache에 공간이 있는가? (gblic 2.26 이후)
+YES →
+    tcache에 넣고 끝
+No  →
+    다음 단계 진행
+
 2. chunk 크기가 fastbin 범위인가?
 YES →
     fastbin에 넣고 끝
@@ -153,6 +159,10 @@ NO →
 뒤 chunk (next) free인가? → 병합 진행 → unsorted bin에 삽입
 
 4. malloc 호출됨
+
+4.5. tcache 확인 (glibc 2.26 이후)
+   ├ YES → 바로 반환 (끝)
+   └ NO → 다음 단계
 
 5. fastbin 확인
 size 맞는 fastbin 있으면 → 바로 꺼내서 반환
