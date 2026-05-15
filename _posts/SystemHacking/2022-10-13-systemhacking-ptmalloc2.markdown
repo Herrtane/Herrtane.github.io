@@ -169,7 +169,7 @@ No
 
 ### arena
 
-fastbin, smallbin, largebin 등의 정보를 모두 담고 있는 객체이다. Multithread 환경에서 race condition을 막기 위해 arena에 접근할 때 lock을 적용하는데, 병목 현상을 일으킬 수 있으므로, ptmalloc에서는 이를 최대한 피하기 위해 최대 64개의 arena를 생성할 수 있게 한다. 즉, lock이 걸려서 대기해야 하는 경우, 새로운 arena를 생성하게 된다. 단, 생성 갯수가 64개로 제한되어 있으므로, 과도한 multithread환경에서는 이를 해결하기 위해 tcache를 추가적으로 도입했다.
+**fastbin, smallbin, largebin 등의 정보를 모두 담고 있는 객체**이다. Multithread 환경에서 race condition을 막기 위해 arena에 접근할 때 lock을 적용하는데, 병목 현상을 일으킬 수 있으므로, ptmalloc에서는 이를 최대한 피하기 위해 최대 64개의 arena를 생성할 수 있게 한다. 즉, lock이 걸려서 대기해야 하는 경우, 새로운 arena를 생성하게 된다. 단, 생성 갯수가 64개로 제한되어 있으므로, 과도한 multithread환경에서는 이를 해결하기 위해 tcache를 추가적으로 도입했다.
 
 <br/>
 
@@ -234,7 +234,7 @@ heap1        heap2        heap3
 
 <br/>
 
-아래 코드는 각 Arena가 가지는 Arena header인 malloc_state 구조체에 대한 코드이다.
+아래 코드는 **각 Arena가 가지는 Arena header**인 `malloc_state` 구조체에 대한 코드이다.
 
 ```c
 struct malloc_state
@@ -278,7 +278,7 @@ struct malloc_state
 };
 ```
 
-아래 코드는 heap_info 코드이다.
+아래 코드는 `heap_info` 코드이다.
 
 ```c
 typedef struct _heap_info
