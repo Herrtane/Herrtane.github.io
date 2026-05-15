@@ -177,7 +177,60 @@ fastbin, smallbin, largebin 등의 정보를 모두 담고 있는 객체이다. 
 
 <br/>
 
-Arena는 다시 main과 sub로 나뉘는데, main arena는 메인 쓰레드로써 생성되었기 때문에 **Main Arena**로 부른다. 단일 스레드용 프로그램을 위해 존재하며 malloc()과 같은 힙 작업을 요구하는 코드를 실행하지 않아도 기본적으로 132KB크기의 initial heap을 가진다. Main Arena는 하나의 힙만 가질 수 있으며 heap_info구조체를 가질 수 없다. 이 때, 하나의 힙은 여러 개의 chunk로 나누어지며 각 chunk는 각각의 header를 갖는다. 새로운 스레드가 생성되어 힙 작업을 수행하고자 할 때 다른 스레드를 기다리는 것을 줄이기 위해 새로운 Arena를 생성하게 되는데 이를 **Sub Arena**라고 부르며, Sub Arena는 Main Arena와 달리 여러 개의 서브 힙과 heap_info구조체를 가질 수 있다.
+Arena는 다시 main과 sub로 나뉜다.
+
+1. **Main Arena** : main arena는 메인 쓰레드로써 생성되었기 때문에 이처럼 부른다. 단일 스레드용 프로그램을 위해 존재하며 malloc()과 같은 힙 작업을 요구하는 코드를 실행하지 않아도 기본적으로 132KB크기의 initial heap을 가진다. Main Arena는 **`brk()` 방식으로 heap을 할당**하기 때문에, **하나의 contiguous한 heap만 가질 수 있으며 `heap_info`구조체를 가질 수 없다**. 이 때, 하나의 힙은 여러 개의 chunk로 나누어지며 각 chunk는 각각의 header를 갖는다.
+2. **Sub Arena** : 새로운 스레드가 생성되어 힙 작업을 수행하고자 할 때 다른 스레드를 기다리는 것을 줄이기 위해 새로운 Arena를 생성하게 되는데 이를 Sub Arena라고 부른다. Sub Arena는 Main Arena와 달리, **`mmap()` 방식으로 heap을 여러 곳에 독립적으로 할당**하기 때문에, **여러 개의 sub heap을 가질 수 있고, 이 각각의 sub heap을 관리하는 `heap_info`구조체를 가질 수 있다**.
+
+여기서 잠깐, heap의 끝 주소를 **program break**라고 하는데, 이 끝 주소를 늘리는 함수가 `brk()`이다. 
+
+```
+C 코드
+  ↓
+glibc 함수 (brk / sbrk)
+  ↓
+syscall (sys_brk)
+  ↓
+kernel에서 실제 heap 확장
+
+// example
+#include <unistd.h>
+
+int main() {
+    sbrk(0);           // 현재 heap 끝 확인
+    sbrk(0x1000);      // heap 늘림
+}
+```
+
+`brk()`의 개념과, `mmap()`과의 차이점을 보기 쉽게 나타내보았다.
+
+```
+malloc(size)
+  ↓
+tcache 확인
+  ↓
+fastbin 확인
+  ↓
+arena 선택
+  ↓
+heap 부족?
+  ├ YES → main이면 brk()
+  └       sub면 mmap()
+-----------------------------
+
+처음:
+[ heap ]
+
+brk 방식
+malloc 호출 후:
+[ heap................. ]
+                     ↑ brk 확장
+
+mmap 방식
+[....]       [....]       [....]
+  ↑            ↑            ↑
+heap1        heap2        heap3
+```
 
 <br/>
 
@@ -223,6 +276,38 @@ struct malloc_state
   INTERNAL_SIZE_T system_mem;
   INTERNAL_SIZE_T max_system_mem;
 };
+```
+
+아래 코드는 heap_info 코드이다.
+
+```c
+typedef struct _heap_info
+{
+    mstate ar_ptr;            /* Arena for this heap. */
+    struct _heap_info *prev;  /* Previous heap. */
+    size_t size;              /* Current size in bytes. */
+    size_t mprotect_size;     /* Size in bytes that has been mprotected
+                                 PROT_READ|PROT_WRITE. */
+    size_t pagesize;          /* Page size used when allocating the arena. */
+
+    /* Make sure the following data is properly aligned, particularly
+       that sizeof(heap_info) + 2 * SIZE_SZ is a multiple of
+       MALLOC_ALIGNMENT. */
+    char pad[-3 * SIZE_SZ & MALLOC_ALIGN_MASK];
+
+} heap_info;
+```
+
+참고로, heap 하나당 arena는 1개 맞다. 하지만 arena 하나는 여러 heap을 가질 수 있다
+
+```
+malloc_state (arena)
+              ↑
+              │ ar_ptr
+   ┌──────────┼──────────┐
+   │          │          │
+heap3       heap2      heap1
+(prev)      (prev)     (head)
 ```
 
 ### tcache (thread local cache)
