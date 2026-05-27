@@ -59,7 +59,7 @@ bitbake core-image-demo -c populate_sdk
 3. 이 전체 조합이 특정 제품의 OS, RootFS와 1:1로 맞게 구성됨
 4. 동일 aarch64여도 OS/배포판/라이브러리 버전이 다르면 링크 결과가 달라짐 -> sysroot로 이것까지 맞춰야함
 5. 그래서 벤더는 **“우리 타겟에 맞는 sysroot + 그 sysroot에 맞춘 gcc/binutils 세트”**를 툴체인으로 제공
-ex) `source ~/starfish-bdk-.../environment-setup-aarch64-linux...` : 이 스크립트를 통해 CC, --sysroot=..., CFLAGS, PATH 우선순위 등을 한꺼번에 세팅해서 Target 환경을 정확하게 재현한다
+ex) `source ~/bdk-.../environment-setup-aarch64-linux...` : 이 스크립트를 통해 CC, --sysroot=..., CFLAGS, PATH 우선순위 등을 한꺼번에 세팅해서 Target 환경을 정확하게 재현한다
 
 ## Kernel Module Build
 
