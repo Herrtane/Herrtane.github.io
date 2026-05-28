@@ -158,3 +158,135 @@ open("/dev/testlkm")
     testlkm_exit()
          │  → sysfs 제거 → device_destroy → class_unregister → unregister_chrdev
 ```
+
+## 계산기 예시
+
+```c
+// calc_drv.h
+
+#ifndef CALC_DRV_H
+#define CALC_DRV_H
+
+#include <linux/ioctl.h>
+
+#define CALC_MAGIC  'C'
+
+/* 유저→커널: 두 수를 보냄 */
+struct calc_input {
+    int a;
+    int b;
+};
+
+/* 커널→유저: 결과를 받음 */
+struct calc_output {
+    int result;
+};
+
+#define CALC_IOCTL_ADD  _IOWR(CALC_MAGIC, 1, struct calc_input)
+#define CALC_IOCTL_MUL  _IOWR(CALC_MAGIC, 2, struct calc_input)
+
+#endif
+```
+
+```c
+// calc_drv.c
+
+#include <linux/module.h>
+#include <linux/fs.h>
+#include <linux/uaccess.h>
+#include "calc_drv.h"
+
+MODULE_LICENSE("GPL");
+
+static int major;
+static struct class calc_cls = { .name = "calc_cls" };
+static struct device *calc_dev;
+
+static long calc_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+    struct calc_input  in  = {0};
+    struct calc_output out = {0};
+
+    if (_IOC_TYPE(cmd) != CALC_MAGIC) return -ENOTTY;
+
+    /* 유저 공간에서 입력 읽기 */
+    if (copy_from_user(&in, (void __user *)arg, sizeof(in)))
+        return -EFAULT;
+
+    switch (cmd) {
+    case CALC_IOCTL_ADD:
+        out.result = in.a + in.b;
+        break;
+    case CALC_IOCTL_MUL:
+        out.result = in.a * in.b;
+        break;
+    default:
+        return -ENOTTY;
+    }
+
+    /* 결과를 유저 공간에 돌려줌 */
+    if (copy_to_user((void __user *)arg, &out, sizeof(out)))
+        return -EFAULT;
+
+    return 0;
+}
+
+static int calc_open(struct inode *inode, struct file *filp)    { return 0; }
+static int calc_release(struct inode *inode, struct file *filp) { return 0; }
+
+static struct file_operations calc_fops = {
+    .owner          = THIS_MODULE,
+    .open           = calc_open,
+    .release        = calc_release,
+    .unlocked_ioctl = calc_ioctl,
+};
+
+static int __init calc_init(void)
+{
+    major = register_chrdev(0, "calc", &calc_fops);
+    class_register(&calc_cls);
+    calc_dev = device_create(&calc_cls, NULL, MKDEV(major, 0), NULL, "calc");
+    return 0;
+}
+
+static void __exit calc_exit(void)
+{
+    device_destroy(&calc_cls, MKDEV(major, 0));
+    class_unregister(&calc_cls);
+    unregister_chrdev(major, "calc");
+}
+
+module_init(calc_init);
+module_exit(calc_exit);
+```
+
+```c
+// user_app.c
+
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include "calc_drv.h"   // 드라이버와 동일한 헤더 공유
+
+int main(void)
+{
+    int fd = open("/dev/calc", O_RDWR);
+    if (fd < 0) { perror("open"); return -1; }
+
+    struct calc_input in = { .a = 7, .b = 3 };
+
+    /* 덧셈 요청 */
+    ioctl(fd, CALC_IOCTL_ADD, &in);
+    struct calc_output *out = (struct calc_output *)&in;
+    printf("7 + 3 = %d\n", out->result);  // 10
+
+    /* 곱셈 요청 */
+    in.a = 7; in.b = 3;
+    ioctl(fd, CALC_IOCTL_MUL, &in);
+    printf("7 * 3 = %d\n", out->result);  // 21
+
+    close(fd);
+    return 0;
+}
+```
